@@ -1,0 +1,142 @@
+﻿@model Developer
+
+<div class="developer-page">
+    <div class="developer-page__top-section">
+        <div class="developer-page__name">@Model.Name</div>
+        <div class="developer-page__photo-actions-frame">
+            @if (ViewBag.ScreenWidth < 450)
+            {
+                <img class="developer-page__photo" src="@Model.Рhoto.Split(".")[0]-Mobile.png">
+                <div class="developer-page__actions">
+                    <div class="developer-page__back-path-link">&#9668;&ensp;Назад</div>
+                    <div class="developer-page__feedback-open-link" id="@Model.Id">Показать отзывы&ensp;&#9658;</div>
+                    <div class="developer-page__feedback-close-link invisible">Скрыть отзывы&ensp;&#9668;</div>
+                </div>
+            }
+            else
+            {
+                <img class="developer-page__photo" src="@Model.Рhoto.Split(".")[0]-Full.png">
+                <div class="developer-page__actions">
+                    <div class="button developer-page__back-path-button">&larr;&ensp;Назад</div>
+                    <div class="button developer-page__feedback-open-button" id="@Model.Id">Показать отзывы&ensp;&darr;</div>
+                    <div class="button developer-page__feedback-close-button invisible">Скрыть отзывы&ensp;&uarr;</div>
+                </div>
+            }
+        </div>
+        <div class="developer-page__short-info">
+            <div class="developer-page__rating-price-frame">
+                <div class="developer-page__rating-frame">
+                    <span>Рейтинг</span>
+                    <ul class="developer-page__rating-list" id="developer-page-rating-list-@Model.Id" data-rating="@Model.Rating">
+                        <li class="developer-page__rating-item"></li>
+                        <li class="developer-page__rating-item"></li>
+                        <li class="developer-page__rating-item"></li>
+                        <li class="developer-page__rating-item"></li>
+                        <li class="developer-page__rating-item"></li>
+                        <li class="developer-page__rating-grade" id="developer-page-rating-grade-@Model.Id">@Model.Rating</li>
+                    </ul>
+                </div>
+                <div class="developer-page__figure"></div>
+                <div class="developer-page__price-frame">
+                    <span>Стоимость услуги</span>
+                    <div class="developer-page__price">@Model.Price у.е.</div>
+                </div>
+            </div>
+            <div class="developer-page__spec-frame">
+                <span>Специализация</span>
+                <div class="developer-page__spec">@Model.Spec-разработчик</div>
+            </div>
+        </div>
+        <div class="developer-page__technologies-frame">
+            <span>Стек используемых технологий</span>
+            <div class="developer-technologies">
+                <div class="developer-technologies__left-frame">
+                    <div class="developer-technologies__ide-frame">
+                        <span>IDE, редакторы исходного кода</span>
+                        <div class="developer-technologies__ide">
+                            @foreach (var item in Model.IdeList)
+                            {
+                                <p>@item</p>
+                            }
+                        </div>
+                    </div>
+                    <div class="developer-technologies__languages-frame">
+                        <span>языки программирования</span>
+                        <div class="developer-technologies__languages">
+                            @foreach (var item in Model.ProgramLangList)
+                            {
+                                <p>@item</p>
+                            }
+                        </div>
+                    </div>
+                    <div class="developer-technologies__databases-frame">
+                        <span>базы данных</span>
+                        <div class="developer-technologies__databases">
+                            @if (Model.DbList.Count() > 0)
+                            {
+                                foreach (var item in Model.DbList)
+                                {
+                                    <p>@item</p>
+                                }
+                            }
+                            else
+                            {
+                                <p>-</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="developer-technologies__figure-frame">
+                    <div class="developer-page__figure"></div>
+                    <div class="developer-page__figure"></div>
+                    <div class="developer-page__figure"></div>
+                </div>
+                <div class="developer-technologies__right-frame">
+                    <div class="developer-technologies__libraries-frame">
+                        <span>фреймворки, библиотеки</span>
+                        <div class="developer-technologies__libraries">
+                            @foreach (var item in Model.LibrariesList)
+                            {
+                                <p>@item</p>
+                            }
+                        </div>
+                    </div>
+                    <div class="developer-technologies__other-skills-frame">
+                        <span>другое</span>
+                        <div class="developer-technologies__other-skills">
+                            @foreach (var item in Model.OtherSkillsList)
+                            {
+                                <p>@item</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="developer-page__certificates-frame">
+            <span>Сертификаты</span>
+                @if (Model.CertificatesList.Count() > 0)
+                {
+                    <ul class="developer-page__certificates">
+                        @foreach (var item in Model.CertificatesList)
+                        {
+                            <li>
+                                <a href=@item["link"] class="developer-page__certificates-link">
+                                    <img src=@item["img"] class="developer-page__certificates-img">
+                                    <span>@item["name"]</span>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <ul class="developer-page__certificates">-</ul>
+                }
+        </div>
+    </div>
+    <div class="developer-page__about-self">
+        <span>О себе:</span>
+        <p>@Html.Raw(Model.About)</p>
+    </div>
+</div>

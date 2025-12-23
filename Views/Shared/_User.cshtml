@@ -1,0 +1,93 @@
+﻿@model User
+
+<div class="user-page">
+    <div class="user-page__user-info">
+        <div class="user-page__user-image user-image">
+            <img class="user-image__image" src="@Model.Image" alt="">
+            @if (Model.GameWinner)
+            {
+                <img class="user-image__game-winner" src="icons/Graduate.svg" alt="">
+                <div class="user-image__game-winner-message"></div>
+            }
+            <div class="user-image__change-image-link">Изменить фотографию</div>
+            <div class="user-image__save-image-link" hidden>Сохранить фотографию</div>
+            <div class="user-image__standart-image-link" hidden>Вернуть стандартную</div>
+            <div class="user-image__cancel-image-link" hidden>Отмена</div>
+            <input id="image-choice" type="file" accept="image/*" hidden>
+        </div>
+        <div class="user-page__user-details user-details">
+            <ul class="user-details__list">
+                <li class="user-details__item">
+                    <h3 class="user-details__item-header">Login</h3>
+                    <span class="user-details__login">@Model.Login</span>
+                </li>
+                <li class="user-details__item">
+                    <h3 class="user-details__item-header">Имя</h3>
+                    <span class="user-details__first-name">@Model.FirstName</span>
+                </li>
+                <li class="user-details__item">
+                    <h3 class="user-details__item-header">Фамилия</h3>
+                    <span class="user-details__sur-name">@Model.SurName</span>
+                </li>
+                <li class="user-details__item">
+                    <h3 class="user-details__item-header">Местоположение</h3>
+                    @if (Model.Geolocation.Keys.Count != 0)
+                    {
+                        <div class="user-details__geolocation-help-icon user-details__geolocation-house-icon"></div>
+                        <div class="user-details__geolocation-help-text user-details__geolocation-house-text">
+                            <p><span>Страна:</span>&emsp;@Model.Geolocation["country"]</p>
+                            <p><span>Город:</span>&emsp;@Model.Geolocation["city"]</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="user-details__geolocation-help-icon">i</div>
+                        <div class="user-details__geolocation-help-text">
+                            При клике на <span>"Я здесь"</span> браузер запросит разрешение на определение координат Вашего нынешнего местоположения с последующим обратным геокодированием посредством Nominatim API.<br><br>При положительном ответе на сервере будут сохранены названия страны и города Вашего местоположения.
+                        </div>
+                    }
+                    <span class="user-details__geolocation-link">Я здесь</span>
+                </li>
+            </ul>
+        </div>
+        <div class="user-page__user-actions user-actions">
+            <ul class="user-actions__list">
+                <li class="user-actions__item">
+                    <span class="user-actions__change-details-link">Изменить данные</span>
+                </li>
+                <li class="user-actions__item invisible">
+                    <span class="user-actions__update-details-link">Подтвердить изменение данных</span>
+                </li>
+                <li class="user-actions__item">
+                    <span class="user-actions__change-password-link">Сменить пароль</span>
+                </li>
+                <li class="user-actions__item">
+                    <span class="user-actions__delete-user-link">Удалить учётную запись</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="user-page__orders-content">
+        <div class="user-page__search-sorting-frame">
+            <div class="user-page__search-content">
+                Поиск по номеру заказа
+                <input type="text" placeholder="Введите номер заказа">
+            </div>
+            <div class="user-page__sorting-content">
+                Сортировать по:
+                <select class="user-page__sorting-list">
+                    <option class="user-page__sorting-item" value="">&uarr;&ensp;даты создания</option>
+                    <option class="user-page__sorting-item" value="">&darr;&ensp;даты создания</option>
+                    <option class="user-page__sorting-item" value="">&uarr;&ensp;стоимости</option>
+                    <option class="user-page__sorting-item" value="">&darr;&ensp;стоимости</option>
+                </select>
+            </div>
+        </div>
+        <div class="user-page__user-orders">
+            <!-- временно -->
+            <div class="user-page__user-orders-text">
+                В скором времени здесь будет представлен&nbsp;<span>список оформленных Заказов</span>.
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,132 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Used as a portfolio.">
+    <title>@ViewData["Title"]dEVgenir_StudProj</title>
+    <link rel="stylesheet" href="css/normalize.css" asp-append-version="true" />
+    <link rel="stylesheet" href="css/reset.css" asp-append-version="true" />
+    <link rel="stylesheet" href="css/style.min.css" asp-append-version="true" />
+    <script defer src="js/variables.js"></script>
+    <script defer src="js/functions.js"></script>
+    <script defer src="js/userScript.js"></script>
+    <script defer src="js/script.js"></script>
+    <script defer src="js/gameScript.js"></script>
+</head>
+<body>
+    <div class="container">
+        @RenderBody()
+    </div>
+
+    <!-- modal windows -->
+    <div class="modal-overlay invisible"></div>
+    <div class="author-reg-frame invisible">
+        <ul class="author-reg-frame__header-list">
+            <li class="author-reg-frame__header-item header__icons-figure"></li>
+            <li class="author-reg-frame__header-item author-reg-frame__actions-frame">
+                <ul class="author-reg-frame__actions-list">
+                    <li class="author-reg-frame__action-item authorization">Авторизация</li>
+                    <li class="author-reg-frame__action-item registration">Регистрация</li>
+                </ul>
+                <div class="author-reg-frame__actions-line"></div>
+            </li>
+            <li class="author-reg-frame__header-item header__icons-figure">
+                <div class="author-reg-frame__closing-link">
+                    <div class="author-reg-frame__symbol">x</div>
+                </div>
+                <div class="author-reg-frame__help-text">Закрыть окно</div>
+            </li>
+        </ul>
+        <form class="authorization-form">
+            <div class="authorization-form__login">
+                Почта: <input class="authorization-form__login-input" type="email" placeholder="Введите свою почту">
+                <span class="authorization-form__login-pattern">xxxx@xxx.xx</span>
+                <span class="authorization-form__login-helper"></span>
+                <span class="authorization-form__helper"></span>
+            </div>
+            <div class="authorization-form__password">
+                Пароль: <input class="authorization-form__password-input" type="password" placeholder="Введите пароль">
+                <span class="authorization-form__password-helper"></span>
+            </div>
+            <input class="authorization-form__reset-input" type="reset">
+        </form>
+        <button class="button authorization-button">Войти</button>
+        <form class="registration-form invisible">
+            <div class="registration-form__login">
+                Почта: <input class="registration-form__login-input" type="email" placeholder="Введите свою почту">
+                <span class="registration-form__login-pattern">xxxx@xxx.xx</span>
+                <span class="registration-form__login-helper"></span>
+                <span class="registration-form__helper"></span>
+            </div>
+            <div class="registration-form__name">
+                Имя: <input class="registration-form__name-input" type="text" maxlength="18" placeholder="Введите свое имя">
+                <span class="registration-form__name-pattern">Любая буква</span>
+                <span class="registration-form__name-helper"></span>
+            </div>
+            <div class="registration-form__password">
+                Пароль: <input class="registration-form__password-input" type="password" placeholder="Придумайте пароль">
+                <span class="registration-form__password-helper"></span>
+            </div>
+            <div class="registration-form__password-check">
+                Проверка: <input class="registration-form__password-check-input" type="password" placeholder="Повторите пароль">
+                <span class="registration-form__password-check-empty-helper"></span>
+                <span class="registration-form__password-check-coherence-helper">Пароли должны совпадать!</span>
+            </div>
+            <input class="registration-form__reset-input" type="reset">
+        </form>
+        <button class="button registration-button invisible">Зарегистрироваться</button>
+    </div>
+    <div class="log-out-modal invisible">
+        <div class="log-out-modal__question">Вы уверены, что хотите выйти?</div>
+        <div class="log-out-modal__buttons">
+            <button class="button log-out-modal__cancel-button">Передумал(а)</button>
+            <button class="button button-denial log-out-modal__accept-button">С меня хватит!</button>
+        </div>
+    </div>
+    <div class="password-change-modal invisible">
+        <div class="password-change-modal__question">Изменить пароль?</div>
+        <form class="password-change-form">
+            <div class="password-change-form__password-old">
+                Старый пароль: <input class="password-change-form__password-old-input" type="password" placeholder="Введите старый пароль">
+                <span class="password-change-form__password-old-helper"></span>
+            </div>
+            <div class="password-change-form__password-new">
+                Новый пароль: <input class="password-change-form__password-new-input" type="password" disabled placeholder="Придумайте новый пароль">
+                <span class="password-change-form__password-new-helper"></span>
+            </div>
+            <div class="password-change-form__password-check">
+                Проверка: <input class="password-change-form__password-check-input" type="password" disabled placeholder="Повторите новый пароль">
+                <span class="password-change-form__password-check-empty-helper"></span>
+                <span class="password-change-form__password-check-coherence-helper">Пароли должны совпадать!</span>
+            </div>
+            <input class="password-change-form__reset-input" type="reset">
+        </form>
+        <div class="password-change-modal__buttons">
+            <button class="button password-change-modal__accept-button button-disabled" disabled>Да</button>
+            <button class="button button-denial password-change-modal__cancel-button">Отмена</button>
+        </div>
+    </div>
+    <div class="user-delete-modal invisible">
+        <div class="user-delete-modal__question">
+            Вы действительно хотите&nbsp;<span>удалить свою учётную запись</span>?
+        </div>
+        <form class="user-delete-form">
+            <div class="user-delete-form__password">
+                Пароль: <input class="user-delete-form__password-input" type="password" placeholder="Введите пароль">
+                <span class="user-delete-form__password-helper"></span>
+            </div>
+            <input class="user-delete-form__reset-input" type="reset">
+        </form>
+        <div class="user-delete-modal__buttons">
+            <button class="button user-delete-modal__cancel-button">Передумал(а)</button>
+            <button class="button user-delete-modal__close-button invisible">Ok</button>
+            <button class="button button-denial user-delete-modal__accept-button">Да!</button>
+        </div>
+    </div>
+    <div class="future-info-modal invisible">
+        <div class="future-info-modal__text"></div>
+        <button class="button future-info-modal__button">Ok</button>
+    </div>
+</body>
+</html>

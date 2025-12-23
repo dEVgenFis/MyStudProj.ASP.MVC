@@ -1,0 +1,26 @@
+﻿@model List<Developer>
+
+@foreach (var developer in Model)
+{
+    <div class="developer-card">
+        <img class="developer-card__photo" src="@developer.Рhoto" alt="@developer.PhotoText">
+        <div class="developer-card__details-actions-frame">
+            <div class="developer-card__details">
+                <div class="developer-card__details-name">@developer.Name</div>
+                <div class="developer-card__details-spec">@developer.Spec</div>
+            </div>
+            <div class="developer-card__price">@developer.Price у.е.</div>
+            <ul class="developer-card__rating-list" id="catalog-rating-list-@developer.Id" data-rating="@developer.Rating">
+                <li class="developer-card__rating-item"></li>
+                <li class="developer-card__rating-item"></li>
+                <li class="developer-card__rating-item"></li>
+                <li class="developer-card__rating-item"></li>
+                <li class="developer-card__rating-item"></li>
+                <li class="developer-card__rating-grade" id="catalog-rating-grade-@developer.Id">@developer.Rating</li>
+            </ul>
+            <div class="developer-card__actions">
+                <div class="button developer-card__button" id="@developer.Id">Подробности</div>
+            </div>
+        </div>
+    </div>
+}

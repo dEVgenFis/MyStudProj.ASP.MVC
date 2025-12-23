@@ -1,0 +1,109 @@
+﻿<div class="header">
+    <h1 class="header__greeting title">Hello, World!</h1>
+    <div class="header__content">
+        <div class="header__icons">
+            <div class="header__icons-figure">
+                <div class="hamburger invisible">
+                    <span class="hamburger__line"></span>
+                </div>
+            </div>
+            <div class="header__icons-logo">
+                <img src="icons/Logo.svg">
+            </div>
+            <div class="header__icons-figure">
+                <div class="sidebar-arrow">
+                    <img src="icons/Sidebar-arrow.svg" alt="">
+                </div>
+            </div>
+        </div>
+        <nav class="header__buttons">
+            <ul class="nav-menu">
+                <li class="nav-menu__item invisible">
+                    <div class="nav-button favorites-list">
+                        <div class="nav-button__frame">
+                            <img src="icons/Favorites-button.svg" class="nav-button__icon">
+                            <div class="nav-button__list-count">-</div>
+                        </div>
+                        <p class="nav-button__text">Избранное</p>
+                    </div>
+                </li>
+                <li class="nav-menu__item">
+                    <div class="nav-button comparison-list">
+                        <div class="nav-button__frame">
+                            <img src="icons/Comparison-button.svg" class="nav-button__icon">
+                            <div class="nav-button__list-count">-</div>
+                        </div>
+                        <p class="nav-button__text">Сравнение</p>
+                    </div>
+                </li>
+                <li class="nav-menu__item">
+                    <div class="nav-button cart">
+                        <div class="nav-button__frame">
+                            <img src="icons/Cart-button.svg" class="nav-button__icon">
+                            <div class="nav-button__list-count">-</div>
+                        </div>
+                        <p class="nav-button__text">Корзина</p>
+                    </div>
+                </li>
+                <li class="nav-menu__item invisible">
+                    <div class="nav-button log-out">
+                        <div class="nav-button__frame">
+                            <img src="icons/Log-Out-button.svg" class="nav-button__icon nav-button__icon-login">
+                        </div>
+                        <p class="nav-button__text">Выйти</p>
+                    </div>
+                </li>
+                <li class="nav-menu__item">
+                    <div class="nav-button log-in">
+                        <div class="nav-button__frame">
+                            <img src="icons/Log-In-button.svg" class="nav-button__icon nav-button__icon-login">
+                        </div>
+                        <p class="nav-button__text">Войти</p>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+<div class="content">
+    <div class="sidebar">
+        <div class="sidebar__menu">
+            <ul class="sidebar__menu-list">
+                <li class="sidebar__menu-item">
+                    <p class="home-page-link">Главная</p>
+                </li>
+                <li class="sidebar__menu-item">
+                    <p class="user-page-link user-page-link__inactive">Моя страница</p>
+                    <p class="user-page-link__help-info">Для доступа к данному разделу необходимо авторизоваться на сайте.</p>
+                </li>
+            </ul>
+        </div>
+        <div class="sidebar__banner">
+            <p>Здесь могла бы быть ваша реклама!</p>
+        </div>
+        <div class="sidebar__figure">
+            <img src="img/Figure-big.png" alt="">
+        </div>
+    </div>
+    <div class="content__main">
+        @await Html.PartialAsync("_Home")
+    </div>
+</div>
+<div class="footer">
+    <div class="footer__logo">
+        <img src="icons/Logo.svg" alt="">
+    </div>
+    <div class="footer__author">
+        <p class="footer__author-details">&copy; Evgeniy Fisunov 2023 — 2025</p>
+        <ul class="footer__author-links author-contacts">
+            <li class="author-contacts__link">
+                <img class="author-contacts__icon" src="icons/GitHub.svg">
+                <a href="https://github.com/dEVgenFis">dEVgenFis</a>
+            </li>
+            <li class="author-contacts__link">
+                <img class="author-contacts__icon" src="icons/Mail.svg" alt="">
+                <p>Frozen_Vi@mail.ru</p>
+            </li>
+        </ul>
+    </div>
+</div>
