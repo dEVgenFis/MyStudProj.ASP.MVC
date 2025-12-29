@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using My_Stud_Proj.Helpers;
 using My_Stud_Proj.Interfaces;
 
 namespace My_Stud_Proj.Controllers
@@ -18,20 +19,24 @@ namespace My_Stud_Proj.Controllers
         public IActionResult Index(Guid developerId, int screenWidth)
         {
             ViewBag.ScreenWidth = screenWidth;
-            var developer = _developersRepository.TryGetById(developerId);
-            if (developer is null)
+            var developerDb = _developersRepository.TryGetById(developerId);
+            if (developerDb is null)
             {
                 return BadRequest("Разработчик не найден.");
             }
-            developer.Rating = _feedbacksRepository.TryGetRatingById(developer.Id);
-            return PartialView("_Developer", developer);
+            var developerViewModel = Mapping.MappingToDeveloperViewModel(developerDb);
+            var feedbacksDbList = _feedbacksRepository.TryGetFeedbacksListById(developerViewModel.Id);
+            developerViewModel.Rating = Mapping.MappingToFeedbacksViewModelList(feedbacksDbList).Rating;
+            return PartialView("_Developer", developerViewModel);
         }
 
         public string GetRating(Guid developerId)
         {
-            var developer = _developersRepository.TryGetById(developerId);
-            developer.Rating = _feedbacksRepository.TryGetRatingById(developer.Id);
-            return developer.Rating;
+            var developerDb = _developersRepository.TryGetById(developerId);
+            var developerViewModel = Mapping.MappingToDeveloperViewModel(developerDb);
+            var feedbacksDbList = _feedbacksRepository.TryGetFeedbacksListById(developerViewModel.Id);
+            developerViewModel.Rating = Mapping.MappingToFeedbacksViewModelList(feedbacksDbList).Rating;
+            return developerViewModel.Rating;
         }
     }
 }

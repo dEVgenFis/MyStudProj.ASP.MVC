@@ -1,9 +1,9 @@
-﻿@model User
+﻿@model UserViewModel
 
 <div class="user-page">
     <div class="user-page__user-info">
         <div class="user-page__user-image user-image">
-            <img class="user-image__image" src="@Model.Image" alt="">
+            <img class="user-image__image" src="@Model.AvatarPath" alt="">
             @if (Model.GameWinner)
             {
                 <img class="user-image__game-winner" src="icons/Graduate.svg" alt="">
@@ -31,7 +31,7 @@
                 </li>
                 <li class="user-details__item">
                     <h3 class="user-details__item-header">Местоположение</h3>
-                    @if (Model.Geolocation.Keys.Count != 0)
+                    @if (Model.Geolocation is not null)
                     {
                         <div class="user-details__geolocation-help-icon user-details__geolocation-house-icon"></div>
                         <div class="user-details__geolocation-help-text user-details__geolocation-house-text">

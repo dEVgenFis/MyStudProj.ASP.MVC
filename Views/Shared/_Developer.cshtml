@@ -1,4 +1,4 @@
-﻿@model Developer
+﻿@model DeveloperViewModel
 
 <div class="developer-page">
     <div class="developer-page__top-section">
@@ -6,7 +6,7 @@
         <div class="developer-page__photo-actions-frame">
             @if (ViewBag.ScreenWidth < 450)
             {
-                <img class="developer-page__photo" src="@Model.Рhoto.Split(".")[0]-Mobile.png">
+                <img class="developer-page__photo" src="@Model.РhotoPath.Split(".")[0]-Mobile.png">
                 <div class="developer-page__actions">
                     <div class="developer-page__back-path-link">&#9668;&ensp;Назад</div>
                     <div class="developer-page__feedback-open-link" id="@Model.Id">Показать отзывы&ensp;&#9658;</div>
@@ -15,7 +15,7 @@
             }
             else
             {
-                <img class="developer-page__photo" src="@Model.Рhoto.Split(".")[0]-Full.png">
+                <img class="developer-page__photo" src="@Model.РhotoPath.Split(".")[0]-Full.png">
                 <div class="developer-page__actions">
                     <div class="button developer-page__back-path-button">&larr;&ensp;Назад</div>
                     <div class="button developer-page__feedback-open-button" id="@Model.Id">Показать отзывы&ensp;&darr;</div>
@@ -72,7 +72,7 @@
                     <div class="developer-technologies__databases-frame">
                         <span>базы данных</span>
                         <div class="developer-technologies__databases">
-                            @if (Model.DbList.Count() > 0)
+                            @if (Model.DbList is not null)
                             {
                                 foreach (var item in Model.DbList)
                                 {
@@ -115,7 +115,7 @@
         </div>
         <div class="developer-page__certificates-frame">
             <span>Сертификаты</span>
-                @if (Model.CertificatesList.Count() > 0)
+                @if (Model.CertificatesList is not null)
                 {
                     <ul class="developer-page__certificates">
                         @foreach (var item in Model.CertificatesList)

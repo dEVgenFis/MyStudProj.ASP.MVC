@@ -4,11 +4,16 @@ namespace My_Stud_Proj.Interfaces
 {
     public interface IUsersRepository
     {
-        List<User> Users { get; }
-        void Add(User user);
-        void Delete(User user);
-        void SaveImage(User user, IFormFile image, IWebHostEnvironment appEnvironment);
-        User? TryGetById(Guid id);
-        User? TryGetByLogin(string login);
+        IList<UserDb> GetAll();
+        UserDb? TryGetByLogin(string login);
+        UserDb? TryGetById(Guid id);
+        UserDb Add(string login, string password, string name, string date);
+        void UpdateSortingValue(UserDb userDb, string list, string sortingValue);
+        void UpdateGeoposition(UserDb userDb, string geoPosition);
+        void UpdateGameList(UserDb userDb, string gameKey, bool wrong);
+        void UpdateInfo(UserDb userDb, string firstName, string surName);
+        void UpdatePassword(UserDb userDb, string newPassword);
+        void SaveImage(UserDb userDb, IFormFile image, IWebHostEnvironment appEnvironment);
+        void Delete(UserDb userDb, IWebHostEnvironment appEnvironment);
     }
 }

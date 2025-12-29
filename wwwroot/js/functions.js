@@ -91,7 +91,6 @@ function renderDeveloperPage() {
     feedbackOpenButton = HTMLbody.clientWidth < 450 ? document.querySelector(".developer-page__feedback-open-link") : document.querySelector(".developer-page__feedback-open-button");
     backPathButton.addEventListener("click", function () {
         // временно
-        amountModal++;
         homePageLink.click();
         ///
     });
@@ -133,6 +132,7 @@ function renderDeveloperPage() {
                 feedbackListFrame.innerHTML = "";
                 updateUserSortingValue("feedbacksList", sortfeedbackListFrame.value);
                 renderFeedbackList();
+                if (HTMLbody.clientWidth < 450) { amountModal-- }
             });
             feedbackCloseButton.addEventListener("click", function () {
                 feedbackFrame.classList.remove("developer-page__feedback-frame-active");
@@ -394,7 +394,7 @@ function renderDeveloperPage() {
                             }
                         });
                     } else {
-                        fetch(`feedback/create?developerId=${feedbackList.developerId}&userId=${user.id}&login=${user.login}&feedbackGrade=${feedbackSelectedGrade}&dateTime=${Date.now().toString()}&feedbackText=${feedbackPersonalText}`)
+                        fetch(`feedback/add?developerId=${feedbackList.developerId}&userId=${user.id}&login=${user.login}&feedbackGrade=${feedbackSelectedGrade}&dateTime=${Date.now().toString()}&feedbackText=${feedbackPersonalText}`)
                         .then(responce => {
                             if (responce.ok) {
                                 feedbackListFrame.innerHTML = "";
@@ -490,7 +490,7 @@ function renderDeveloperPage() {
 
 function renderFeedback(feedback) {
     let userGameWinnerVisibleClass = feedback?.userGameWinner ? "" : " invisible",
-        userImage = !feedback ? user.image : feedback.userImage,
+        userImage = !feedback ? user.avatarPath : feedback.userAvatarPath,
         imageFrame = `
             <img class="developer-feedback__user-image" src="${userImage}">
             <img class="developer-feedback__user-game-winner-image${userGameWinnerVisibleClass}" src="icons/Graduate.svg" alt=""></img>
@@ -1411,7 +1411,7 @@ function dragTimer(event) {
     }
 }
 
-function changeGameContent(cause) {
+function changeGameContent() {
     gameContent.innerHTML = `
         Вы безупречно справились со всеми заданиями и ответили на все вопросы, доказав тем самым свою профессиональную состоятельность на сегодняшний день.<br><br>Спасибо за уделённое время!
         <button class="button game__button-continuation">До встречи!</button>

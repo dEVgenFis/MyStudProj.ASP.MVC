@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using My_Stud_Proj.Helpers;
 using My_Stud_Proj.Interfaces;
 
 namespace My_Stud_Proj.Controllers
@@ -22,16 +23,14 @@ namespace My_Stud_Proj.Controllers
 
         public IActionResult Sorting(string sortingValue)
         {
-            var developers = _developersRepository.GetAll();
-            foreach (var developer in developers)
+            var developersDb = _developersRepository.GetAll();
+            var developersViewModel = Mapping.MappingToDevelopersViewModelList(developersDb);
+            foreach (var developer in developersViewModel)
             {
-                // временный метод
-                var feedbacksList = _feedbacksRepository.Create(developer.Id, developer.Spec);
-                ///
-                developer.Rating = _feedbacksRepository.TryGetRatingById(developer.Id);
+                var feedbacksDbList = _feedbacksRepository.TryGetFeedbacksListById(developer.Id) ?? _feedbacksRepository.Create(developer.Id);
+                developer.Rating = Mapping.MappingToFeedbacksViewModelList(feedbacksDbList).Rating;
             }
-            developers = _developersRepository.Sorting(sortingValue);
-            return PartialView("_Catalog", developers);
+            return PartialView("_Catalog", SortingService.SortingDevelopersList(developersViewModel, sortingValue));
         }
 
         public IActionResult Back()

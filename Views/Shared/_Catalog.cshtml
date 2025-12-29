@@ -1,9 +1,9 @@
-﻿@model List<Developer>
+﻿@model List<DeveloperViewModel>
 
 @foreach (var developer in Model)
 {
     <div class="developer-card">
-        <img class="developer-card__photo" src="@developer.Рhoto" alt="@developer.PhotoText">
+        <img class="developer-card__photo" src="@developer.РhotoPath" alt="@developer.PhotoText">
         <div class="developer-card__details-actions-frame">
             <div class="developer-card__details">
                 <div class="developer-card__details-name">@developer.Name</div>

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using My_Stud_Proj.Helpers;
 using My_Stud_Proj.Interfaces;
-using My_Stud_Proj.Models;
-using System.Text.Json;
 
 namespace My_Stud_Proj.Controllers
 {
@@ -13,144 +12,122 @@ namespace My_Stud_Proj.Controllers
 
         public UserController(IWebHostEnvironment appEnvironment, IUsersRepository usersRepository)
         {
-            this._appEnvironment = appEnvironment;
-            this._usersRepository = usersRepository;
+            _appEnvironment = appEnvironment;
+            _usersRepository = usersRepository;
         }
 
         [HttpPost]
         public IActionResult Index(Guid id, string login)
         {
-            var user = _usersRepository.TryGetById(id);
-            if (user is null || user.Login != login)
+            var userDb = _usersRepository.TryGetById(id);
+            if (userDb is null || userDb.Login != login)
             {
                 return NotFound();
             }
-            return PartialView("_User", user);
+            return PartialView("_User", Mapping.MappingToUserViewModel(userDb));
         }
 
         [HttpPost]
         public IActionResult Authorization(string login, string password)
         {
-            var user = _usersRepository.TryGetByLogin(login);
-            if (user is null)
+            var userDb = _usersRepository.TryGetByLogin(login);
+            if (userDb is null)
             {
                 return NotFound("Пользователь не найден");
-            } else if (user.Password != password)
+            } else if (userDb.Password != password)
             {
                 return BadRequest("Неверный пароль");
             }
-            return Json(user);
+            return Json(Mapping.MappingToUserViewModel(userDb));
         }
 
         [HttpPost]
         public IActionResult Create(string login, string password, string name, string date)
         {
-            foreach (var user in _usersRepository.Users)
+            foreach (var userDb in _usersRepository.GetAll())
             {
-                if (user.Login == login)
+                if (userDb.Login == login)
                 {
                     return BadRequest("Пользователь уже существует");
                 }
             }
-            var newUser = new User(login, password, name, date);
-            _usersRepository.Add(newUser);
-            return Json(newUser);
+            var newUser = _usersRepository.Add(login, password, name, date);
+            return Json(Mapping.MappingToUserViewModel(newUser));
         }
 
         [HttpPost]
         public IActionResult UpdateSortingValue(Guid id, string login, string list, string sortingValue)
         {
-            var user = _usersRepository.TryGetById(id);
-            if (user is null || user.Login != login)
+            var userDb = _usersRepository.TryGetById(id);
+            if (userDb is null || userDb.Login != login)
             {
                 return NotFound();
             }
-            switch (list)
-            {
-                case "developersList":
-                    user.SortingDevListValue = sortingValue;
-                    break;
-                case "feedbacksList":
-                    user.SortingFdbackListValue = sortingValue;
-                    break;
-            }
-            return Json(user);
+            _usersRepository.UpdateSortingValue(userDb, list, sortingValue);
+            return Json(Mapping.MappingToUserViewModel(userDb));
         }
 
         [HttpPost]
         public IActionResult UpdateImage(Guid id, string login, IFormFile avatar)
         {
-            var user = _usersRepository.TryGetById(id);
-            if (user is null || user.Login != login)
+            var userDb = _usersRepository.TryGetById(id);
+            if (userDb is null || userDb.Login != login)
             {
                 return NotFound();
             }
-            _usersRepository.SaveImage(user, avatar, _appEnvironment);
-            return Json(user);
+            _usersRepository.SaveImage(userDb, avatar, _appEnvironment);
+            return Json(Mapping.MappingToUserViewModel(userDb));
         }
 
         [HttpPost]
         public IActionResult UpdateGeoposition(Guid id, string login, string geoPosition)
         {
-            var user = _usersRepository.TryGetById(id);
-            if (user is null || user.Login != login)
+            var userDb = _usersRepository.TryGetById(id);
+            if (userDb is null || userDb.Login != login)
             {
                 return NotFound();
             }
-            user.Geolocation = JsonSerializer.Deserialize<Dictionary<string, string>>(geoPosition);
-            return Json(user);
+            _usersRepository.UpdateGeoposition(userDb, geoPosition);
+            return Json(Mapping.MappingToUserViewModel(userDb));
         }
 
         [HttpPost]
         public IActionResult UpdateGameList(Guid id, string login, string gameKey = "", bool wrong = false)
         {
-            var user = _usersRepository.TryGetById(id);
-            if (user is null || user.Login != login)
+            var userDb = _usersRepository.TryGetById(id);
+            if (userDb is null || userDb.Login != login)
             {
                 return NotFound();
             }
-            if (wrong)
-            {
-                user.TotalGameAttempts++;
-            }
-            else
-            {
-                user.GamesList.Remove(gameKey);
-                if (user.GamesList.Count == 0)
-                {
-                    user.GameWinner = true;
-                    user.TotalGameAttempts++;
-                }
-            }
-            return Json(user);
+            _usersRepository.UpdateGameList(userDb, gameKey, wrong);
+            return Json(Mapping.MappingToUserViewModel(userDb));
         }
 
         [HttpPost]
         public IActionResult UpdateInfo(Guid id, string login, string firstName, string surName)
         {
-            var user = _usersRepository.TryGetById(id);
-            if (user is null || user.Login != login)
+            var userDb = _usersRepository.TryGetById(id);
+            if (userDb is null || userDb.Login != login)
             {
                 return NotFound();
             }
-            user.FirstName = firstName;
-            user.SurName = surName;
-            return Json(user);
+            _usersRepository.UpdateInfo(userDb, firstName, surName);
+            return Json(Mapping.MappingToUserViewModel(userDb));
         }
 
         [HttpPost]
         public IActionResult CheckPassword(Guid id, string login, string passwordPart)
         {
-            var user = _usersRepository.TryGetById(id);
-            if (user is null || user.Login != login)
+            var userDb = _usersRepository.TryGetById(id);
+            if (userDb is null || userDb.Login != login)
             {
                 return NotFound();
             }
-            if (!user.Password.Contains(passwordPart))
+            if (!userDb.Password.Contains(passwordPart))
             {
                 return Ok("Неверный пароль");
             }
-            else if (user.Password == passwordPart)
+            else if (userDb.Password == passwordPart)
             {
                 return Ok("Верный пароль");
             }
@@ -160,38 +137,38 @@ namespace My_Stud_Proj.Controllers
         [HttpPost]
         public IActionResult UpdatePassword(Guid id, string login, string newPassword)
         {
-            var user = _usersRepository.TryGetById(id);
-            if (user is null || user.Login != login)
+            var userDb = _usersRepository.TryGetById(id);
+            if (userDb is null || userDb.Login != login)
             {
                 return NotFound();
             }
-            user.Password = newPassword;
+            _usersRepository.UpdatePassword(userDb, newPassword);
             return Ok();
         }
 
         [HttpPost]
         public IActionResult SaveCanvasImage(Guid id, string login, IFormFile canvas)
         {
-            var user = _usersRepository.TryGetById(id);
-            if (user is null || user.Login != login)
+            var userDb = _usersRepository.TryGetById(id);
+            if (userDb is null || userDb.Login != login)
             {
                 return NotFound();
             }
-            _usersRepository.SaveImage(user, canvas, _appEnvironment);
+            _usersRepository.SaveImage(userDb, canvas, _appEnvironment);
             return Ok();
         }
 
         [HttpDelete]
         public IActionResult Delete(Guid id, string login, string password)
         {
-            var user = _usersRepository.TryGetById(id);
-            if (user is null || user.Login != login)
+            var userDb = _usersRepository.TryGetById(id);
+            if (userDb is null || userDb.Login != login)
             {
                 return NotFound();
             }
-            if (user.Password == password)
+            if (userDb.Password == password)
             {
-                _usersRepository.Delete(user);
+                _usersRepository.Delete(userDb, _appEnvironment);
             } else
             {
                 return BadRequest("Неверный пароль");

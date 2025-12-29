@@ -237,7 +237,7 @@ userPageLink.addEventListener("click", function() {
                         if (data) {
                             localStorage.setItem("user", JSON.stringify(data));
                             userIdentification();
-                            userImage.setAttribute("src", user.image);
+                            userImage.setAttribute("src", user.avatarPath);
                             URL.revokeObjectURL(imageURL);
                         }
                     });
@@ -246,7 +246,7 @@ userPageLink.addEventListener("click", function() {
                 userImageSaveLink.hidden = userImageCancelLink.hidden = userImageStandartLink.hidden = true;
             });
             userImageCancelLink.addEventListener("click", function () {
-                userImage.setAttribute("src", user.image);
+                userImage.setAttribute("src", user.avatarPath);
                 userImageChangeLink.hidden = false;
                 userImageSaveLink.hidden = userImageCancelLink.hidden = userImageStandartLink.hidden = true;
                 imageInput.value = "";
@@ -271,7 +271,7 @@ userPageLink.addEventListener("click", function() {
                     if (data) {
                         localStorage.setItem("user", JSON.stringify(data));
                         userIdentification();
-                        userImage.setAttribute("src", user.image);
+                        userImage.setAttribute("src", user.avatarPath);
                         URL.revokeObjectURL(imageURL);
                     }
                 });
@@ -294,7 +294,7 @@ userPageLink.addEventListener("click", function() {
                                 country: data.address.country,
                                 city: data.address.city
                             };
-                            if (user.geolocation.country != data.address.country && user.geolocation.city != data.address.city) {
+                            if (user.geolocation?.country != data.address.country && user.geolocation?.city != data.address.city) {
                                 formData = new FormData();
                                 formData.append("id", user.id);
                                 formData.append("login", user.login);

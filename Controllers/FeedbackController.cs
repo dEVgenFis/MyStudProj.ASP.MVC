@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using My_Stud_Proj.Helpers;
 using My_Stud_Proj.Interfaces;
 using System.Text.Json;
 
@@ -8,11 +9,14 @@ namespace My_Stud_Proj.Controllers
     {
         private readonly IFeedbacksRepository _feedbacksRepository;
 
+        private readonly IDevelopersRepository _developersRepository;
+
         private readonly IUsersRepository _usersRepository;
 
-        public FeedbackController(IFeedbacksRepository feedbacksRepository, IUsersRepository usersRepository)
+        public FeedbackController(IFeedbacksRepository feedbacksRepository, IDevelopersRepository developersRepository, IUsersRepository usersRepository)
         {
             _feedbacksRepository = feedbacksRepository;
+            _developersRepository = developersRepository;
             _usersRepository = usersRepository;
         }
 
@@ -23,40 +27,28 @@ namespace My_Stud_Proj.Controllers
 
         public IActionResult GetAll(Guid id, string sortingValue)
         {
-            var userList = _usersRepository.Users;
-            var feedbackList = _feedbacksRepository.TryGetFeedbacksListById(id);
-            if (feedbackList is null)
+            var developerDb = _developersRepository.TryGetById(id);
+            var usersDb = _usersRepository.GetAll();
+            if (developerDb is null)
             {
                 return NotFound();
             }
-            feedbackList.List = _feedbacksRepository.Sorting(feedbackList.List, sortingValue);
-            foreach (var feedback in feedbackList.List)
-            {
-                foreach (var user in userList)
-                {
-                    if (feedback.UserId == user.Id)
-                    {
-                        feedback.UserImage = user.Image;
-                        feedback.UserName = user.SurName == "-" ? user.FirstName : user.FirstName + " " + user.SurName[0] + ".";
-                        feedback.UserGameWinner = user.GameWinner;
-                        feedback.UserTotalGameAttempts = user.TotalGameAttempts;
-                        break;
-                    }
-                }
-            }
-            var data = JsonSerializer.Serialize(feedbackList, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+            var feedbacksDbList = _feedbacksRepository.TryGetFeedbacksListById(id);
+            var feedbacksViewModelList = Mapping.MappingToFeedbacksViewModelList(feedbacksDbList);
+            feedbacksViewModelList.List = SortingService.SortingFeedbacksList(feedbacksViewModelList.List, sortingValue);
+            var data = JsonSerializer.Serialize(feedbacksViewModelList, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
             return Ok(data);
         }
 
-        public IActionResult Create(Guid developerId, Guid userId, string login, byte feedbackGrade, string dateTime, string feedbackText = "")
+        public IActionResult Add(Guid developerId, Guid userId, string login, byte feedbackGrade, string dateTime, string feedbackText = "")
         {
             var existingFeedbackList = _feedbacksRepository.TryGetFeedbacksListById(developerId);
-            var user = _usersRepository.TryGetById(userId);
-            if (existingFeedbackList is null || user is null || user.Login != login)
+            var userDb = _usersRepository.TryGetById(userId);
+            if (existingFeedbackList is null || userDb is null || userDb.Login != login)
             {
                 return NotFound();
             }
-            _feedbacksRepository.Add(existingFeedbackList, userId, feedbackGrade, feedbackText, dateTime);
+            _feedbacksRepository.Add(existingFeedbackList, userDb, feedbackGrade, feedbackText, dateTime);
             return Ok();
         }
 
@@ -72,7 +64,7 @@ namespace My_Stud_Proj.Controllers
             {
                 return NotFound();
             }
-            _feedbacksRepository.Update(existingFeedback, grade, text, dateTime);
+            _feedbacksRepository.Update(existingFeedbackList, existingFeedback, grade, text, dateTime);
             return Ok();
         }
 
