@@ -6,7 +6,7 @@
         <div class="developer-page__photo-actions-frame">
             @if (ViewBag.ScreenWidth < 450)
             {
-                <img class="developer-page__photo" src="@Model.РhotoPath.Split(".")[0]-Mobile.png">
+                <img class="developer-page__photo" src="@Model.РhotoPath.Split(".")[0]-Mobile.png" alt="developer-photo">
                 <div class="developer-page__actions">
                     <div class="developer-page__back-path-link">&#9668;&ensp;Назад</div>
                     <div class="developer-page__feedback-open-link" id="@Model.Id">Показать отзывы&ensp;&#9658;</div>
@@ -15,7 +15,7 @@
             }
             else
             {
-                <img class="developer-page__photo" src="@Model.РhotoPath.Split(".")[0]-Full.png">
+                <img class="developer-page__photo" src="@Model.РhotoPath.Split(".")[0]-Full.png" alt="developer-photo">
                 <div class="developer-page__actions">
                     <div class="button developer-page__back-path-button">&larr;&ensp;Назад</div>
                     <div class="button developer-page__feedback-open-button" id="@Model.Id">Показать отзывы&ensp;&darr;</div>
@@ -122,7 +122,7 @@
                         {
                             <li>
                                 <a href=@item["link"] class="developer-page__certificates-link">
-                                    <img src=@item["img"] class="developer-page__certificates-img">
+                                    <img src=@item["img"] class="developer-page__certificates-img" alt="developer-certificate">
                                     <span>@item["name"]</span>
                                 </a>
                             </li>

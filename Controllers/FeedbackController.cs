@@ -34,7 +34,7 @@ namespace My_Stud_Proj.Controllers
                 return NotFound();
             }
             var feedbacksDbList = _feedbacksRepository.TryGetFeedbacksListById(id);
-            var feedbacksViewModelList = Mapping.MappingToFeedbacksViewModelList(feedbacksDbList);
+            var feedbacksViewModelList = MappingService.MappingToFeedbacksViewModelList(feedbacksDbList);
             feedbacksViewModelList.List = SortingService.SortingFeedbacksList(feedbacksViewModelList.List, sortingValue);
             var data = JsonSerializer.Serialize(feedbacksViewModelList, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
             return Ok(data);

@@ -11,6 +11,7 @@ namespace My_Stud_Proj
 
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
         {
+            // для запуска проекта на VPS необходимо отключить миграции
             Database.Migrate();
         }
     }

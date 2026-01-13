@@ -24,7 +24,7 @@ namespace My_Stud_Proj.Controllers
             {
                 return NotFound();
             }
-            return PartialView("_User", Mapping.MappingToUserViewModel(userDb));
+            return PartialView("_User", MappingService.MappingToUserViewModel(userDb));
         }
 
         [HttpPost]
@@ -38,7 +38,7 @@ namespace My_Stud_Proj.Controllers
             {
                 return BadRequest("Неверный пароль");
             }
-            return Json(Mapping.MappingToUserViewModel(userDb));
+            return Json(MappingService.MappingToUserViewModel(userDb));
         }
 
         [HttpPost]
@@ -52,7 +52,7 @@ namespace My_Stud_Proj.Controllers
                 }
             }
             var newUser = _usersRepository.Add(login, password, name, date);
-            return Json(Mapping.MappingToUserViewModel(newUser));
+            return Json(MappingService.MappingToUserViewModel(newUser));
         }
 
         [HttpPost]
@@ -64,7 +64,7 @@ namespace My_Stud_Proj.Controllers
                 return NotFound();
             }
             _usersRepository.UpdateSortingValue(userDb, list, sortingValue);
-            return Json(Mapping.MappingToUserViewModel(userDb));
+            return Json(MappingService.MappingToUserViewModel(userDb));
         }
 
         [HttpPost]
@@ -76,7 +76,7 @@ namespace My_Stud_Proj.Controllers
                 return NotFound();
             }
             _usersRepository.SaveImage(userDb, avatar, _appEnvironment);
-            return Json(Mapping.MappingToUserViewModel(userDb));
+            return Json(MappingService.MappingToUserViewModel(userDb));
         }
 
         [HttpPost]
@@ -88,7 +88,7 @@ namespace My_Stud_Proj.Controllers
                 return NotFound();
             }
             _usersRepository.UpdateGeoposition(userDb, geoPosition);
-            return Json(Mapping.MappingToUserViewModel(userDb));
+            return Json(MappingService.MappingToUserViewModel(userDb));
         }
 
         [HttpPost]
@@ -100,7 +100,7 @@ namespace My_Stud_Proj.Controllers
                 return NotFound();
             }
             _usersRepository.UpdateGameList(userDb, gameKey, wrong);
-            return Json(Mapping.MappingToUserViewModel(userDb));
+            return Json(MappingService.MappingToUserViewModel(userDb));
         }
 
         [HttpPost]
@@ -112,7 +112,7 @@ namespace My_Stud_Proj.Controllers
                 return NotFound();
             }
             _usersRepository.UpdateInfo(userDb, firstName, surName);
-            return Json(Mapping.MappingToUserViewModel(userDb));
+            return Json(MappingService.MappingToUserViewModel(userDb));
         }
 
         [HttpPost]

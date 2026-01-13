@@ -67,6 +67,9 @@ authorizationButton.addEventListener("click", function() {
                     userLogIn();
                     changePositionNotificationHelper();
                     deactivateAuthorRegFrame();
+                    if (HTMLbody.clientWidth < 450) {
+                        sidebarArrow.click();
+                    }
                 } else {
                     authorRegHelperChange(authorizationLoginInput, authorizationHelper, data);
                 }
@@ -132,6 +135,9 @@ registrationButton.addEventListener("click", function() {
                     userLogIn();
                     changePositionNotificationHelper();
                     deactivateAuthorRegFrame();
+                    if (HTMLbody.clientWidth < 450) {
+                        sidebarArrow.click();
+                    }
                 } else {
                     authorRegHelperChange(registrationLoginInput, registrationHelper, data);
                 }

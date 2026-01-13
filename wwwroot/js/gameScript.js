@@ -21,7 +21,10 @@ gameButtonHelper.classList = ["game__button-helper invisible"];
     });
 });
 
-gameAnswerButton.addEventListener("click", function() {
+gameAnswerButton.addEventListener("click", function () {
+    if (window.scrollY != 0) {
+        scrollingElem(window, 0);
+    }
     [gameAction, gameButtons, gameHelperText].forEach(elem => {
         elem.classList.add(HTMLbody.clientWidth < 450 ? "mobile-invisible" : "modal");
     });
@@ -159,7 +162,10 @@ stampButton.addEventListener("click", function() {
     }
 });
 
-gameDenialButton.addEventListener("click", function() {
+gameDenialButton.addEventListener("click", function () {
+    if (window.scrollY != 0) {
+        scrollingElem(window, 0);
+    }
     [gameAction, gameButtons, gameHelperText].forEach(elem => {
         elem.classList.add(HTMLbody.clientWidth < 450 ? "mobile-invisible" : "modal");
     });

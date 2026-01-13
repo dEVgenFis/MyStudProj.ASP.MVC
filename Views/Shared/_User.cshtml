@@ -3,10 +3,10 @@
 <div class="user-page">
     <div class="user-page__user-info">
         <div class="user-page__user-image user-image">
-            <img class="user-image__image" src="@Model.AvatarPath" alt="">
+            <img class="user-image__image" src="@Model.AvatarPath" alt="user-photo">
             @if (Model.GameWinner)
             {
-                <img class="user-image__game-winner" src="icons/Graduate.svg" alt="">
+                <img class="user-image__game-winner" src="icons/Graduate.svg" alt="graduate-icon">
                 <div class="user-image__game-winner-message"></div>
             }
             <div class="user-image__change-image-link">Изменить фотографию</div>
@@ -29,7 +29,8 @@
                     <h3 class="user-details__item-header">Фамилия</h3>
                     <span class="user-details__sur-name">@Model.SurName</span>
                 </li>
-                <li class="user-details__item">
+                @* скрываем блок ввиду отказа в запросе с VPS *@
+                <li class="user-details__item" hidden>
                     <h3 class="user-details__item-header">Местоположение</h3>
                     @if (Model.Geolocation is not null)
                     {
@@ -48,6 +49,7 @@
                     }
                     <span class="user-details__geolocation-link">Я здесь</span>
                 </li>
+                @* /// *@
             </ul>
         </div>
         <div class="user-page__user-actions user-actions">
@@ -71,23 +73,24 @@
         <div class="user-page__search-sorting-frame">
             <div class="user-page__search-content">
                 Поиск по номеру заказа
-                <input type="text" placeholder="Введите номер заказа">
+                <input type="text" placeholder="Введите номер заказа" disabled>
             </div>
-            <div class="user-page__sorting-content">
+            <label class="user-page__sorting-content">
                 Сортировать по:
-                <select class="user-page__sorting-list">
+                <select class="user-page__sorting-list" disabled>
                     <option class="user-page__sorting-item" value="">&uarr;&ensp;даты создания</option>
                     <option class="user-page__sorting-item" value="">&darr;&ensp;даты создания</option>
                     <option class="user-page__sorting-item" value="">&uarr;&ensp;стоимости</option>
                     <option class="user-page__sorting-item" value="">&darr;&ensp;стоимости</option>
                 </select>
-            </div>
+            </label>
         </div>
         <div class="user-page__user-orders">
             <!-- временно -->
             <div class="user-page__user-orders-text">
                 В скором времени здесь будет представлен&nbsp;<span>список оформленных Заказов</span>.
             </div>
+            @* /// *@
         </div>
     </div>
 </div>

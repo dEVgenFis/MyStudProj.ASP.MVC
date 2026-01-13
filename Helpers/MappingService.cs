@@ -2,7 +2,7 @@
 
 namespace My_Stud_Proj.Helpers
 {
-    public static class Mapping
+    public static class MappingService
     {
         public static DeveloperViewModel MappingToDeveloperViewModel(DeveloperDb developerDb)
         {

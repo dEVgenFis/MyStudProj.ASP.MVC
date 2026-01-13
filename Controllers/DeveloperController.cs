@@ -24,18 +24,18 @@ namespace My_Stud_Proj.Controllers
             {
                 return BadRequest("Разработчик не найден.");
             }
-            var developerViewModel = Mapping.MappingToDeveloperViewModel(developerDb);
+            var developerViewModel = MappingService.MappingToDeveloperViewModel(developerDb);
             var feedbacksDbList = _feedbacksRepository.TryGetFeedbacksListById(developerViewModel.Id);
-            developerViewModel.Rating = Mapping.MappingToFeedbacksViewModelList(feedbacksDbList).Rating;
+            developerViewModel.Rating = MappingService.MappingToFeedbacksViewModelList(feedbacksDbList).Rating;
             return PartialView("_Developer", developerViewModel);
         }
 
         public string GetRating(Guid developerId)
         {
             var developerDb = _developersRepository.TryGetById(developerId);
-            var developerViewModel = Mapping.MappingToDeveloperViewModel(developerDb);
+            var developerViewModel = MappingService.MappingToDeveloperViewModel(developerDb);
             var feedbacksDbList = _feedbacksRepository.TryGetFeedbacksListById(developerViewModel.Id);
-            developerViewModel.Rating = Mapping.MappingToFeedbacksViewModelList(feedbacksDbList).Rating;
+            developerViewModel.Rating = MappingService.MappingToFeedbacksViewModelList(feedbacksDbList).Rating;
             return developerViewModel.Rating;
         }
     }

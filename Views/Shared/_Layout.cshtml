@@ -2,21 +2,31 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
+    <title>@ViewData["Title"]dEvgen_studProj</title>
+    <meta name="description" content="Used as a portfolio. ASP.NET Core MVC">
+    <meta name="keywords" content="portfolio, портфолио, student project, студенческий проект, asp, асп, net, core, mvc, model, модель, view, представление, controller, контроллер" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Used as a portfolio.">
-    <title>@ViewData["Title"]dEVgenir_StudProj</title>
     <link rel="stylesheet" href="css/normalize.css" asp-append-version="true" />
     <link rel="stylesheet" href="css/reset.css" asp-append-version="true" />
-    <link rel="stylesheet" href="css/style.min.css" asp-append-version="true" />
-    <script defer src="js/variables.js"></script>
-    <script defer src="js/functions.js"></script>
-    <script defer src="js/userScript.js"></script>
-    <script defer src="js/script.js"></script>
-    <script defer src="js/gameScript.js"></script>
+    <link rel="stylesheet" href="css/style.css" asp-append-version="true" />
+    <script defer src="js/variables.js" asp-append-version="true"></script>
+    <script defer src="js/functions.js" asp-append-version="true"></script>
+    <script defer src="js/userScript.js" asp-append-version="true"></script>
+    <script defer src="js/script.js" asp-append-version="true"></script>
+    <script defer src="js/gameScript.js" asp-append-version="true"></script>
 </head>
 <body>
     <div class="container">
         @RenderBody()
+    </div>
+    <div class="screen-width-error">
+        <p>
+            На данный момент проект не адаптирован под ширину экрана Вашего устройства.
+        </p>
+        <p>
+            Работы по устранению указанной проблемы ведутся.
+        </p>
+        <p>Спасибо за ожидание!</p>
     </div>
 
     <!-- modal windows -->

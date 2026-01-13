@@ -492,7 +492,7 @@ function renderFeedback(feedback) {
     let userGameWinnerVisibleClass = feedback?.userGameWinner ? "" : " invisible",
         userImage = !feedback ? user.avatarPath : feedback.userAvatarPath,
         imageFrame = `
-            <img class="developer-feedback__user-image" src="${userImage}">
+            <img class="developer-feedback__user-image" src="${userImage}" alt="user-photo">
             <img class="developer-feedback__user-game-winner-image${userGameWinnerVisibleClass}" src="icons/Graduate.svg" alt=""></img>
             <div class="developer-feedback__user-game-winner-message">GameWinner!<br>Кол-во попыток:&ensp;<span>${feedback?.userTotalGameAttempts}</span></div>
         `,
@@ -1412,6 +1412,9 @@ function dragTimer(event) {
 }
 
 function changeGameContent() {
+    if (window.scrollY != 0) {
+        scrollingElem(window, 0);
+    }
     gameContent.innerHTML = `
         Вы безупречно справились со всеми заданиями и ответили на все вопросы, доказав тем самым свою профессиональную состоятельность на сегодняшний день.<br><br>Спасибо за уделённое время!
         <button class="button game__button-continuation">До встречи!</button>
@@ -1426,6 +1429,9 @@ function changeGameContent() {
 }
 
 function generateRandomGame(gamesList) {
+    if (window.scrollY != 0) {
+        scrollingElem(window, 0);
+    }
     randomNumber = Math.floor(Math.random() * gamesList.length);
     randomGameKey = gamesList[randomNumber];
     gameAction.innerHTML = "";
