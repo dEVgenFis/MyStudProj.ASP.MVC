@@ -10,15 +10,25 @@ namespace My_Stud_Proj.Controllers
 
         private readonly IFeedbacksRepository _feedbacksRepository;
 
-        public HomeController(IDevelopersRepository developersRepository, IFeedbacksRepository feedbacksRepository)
+        private readonly MetricsService _metricsService;
+
+        public HomeController(IDevelopersRepository developersRepository, IFeedbacksRepository feedbacksRepository, MetricsService metricsService)
         {
             _developersRepository = developersRepository;
             _feedbacksRepository = feedbacksRepository;
+            _metricsService = metricsService;
         }
 
         public IActionResult Index()
         {
             return View();
+        }
+
+        public IActionResult MeasuringMetrics(int screenWidth)
+        {
+            _metricsService.RecordRequest("Home", "MeasuringMetrics");
+            _metricsService.RecordScreenCategory(screenWidth);
+            return Ok();
         }
 
         public IActionResult Sorting(string sortingValue)

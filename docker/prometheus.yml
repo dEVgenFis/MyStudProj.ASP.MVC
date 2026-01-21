@@ -1,0 +1,10 @@
+# Блок настроек
+scrape_configs:
+  # Указание имени конкретной задачи (сбор данных)
+  - job_name: 'my_stud_proj'
+    # Установка периодичности опроса приложения (через эндпоинт "/metrics")
+    scrape_interval: 30s
+    # Указание списка адресов для сбора данных
+    static_configs:
+      # "http://host.docker.internal:5000/metrics"
+      - targets: ['host.docker.internal:5000']

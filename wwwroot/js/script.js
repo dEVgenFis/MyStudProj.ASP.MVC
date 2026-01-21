@@ -1,6 +1,7 @@
 "use strict"
 
-window.addEventListener("load", function() {
+window.addEventListener("load", function () {
+    fetch(`/home/measuringmetrics?screenWidth=${HTMLbody.clientWidth}`);
     scrollingElem(window, 0);
     // проверяем авторизацию Пользователя
     userIdentification();

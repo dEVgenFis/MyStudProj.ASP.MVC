@@ -1,0 +1,45 @@
+# Блок описания контейнеров
+services:
+  # Контейнер "Prometheus"
+  prometheus:
+    # Необходимый образ для запуска контейнера, скачивается с "Docker Hub" (последняя стабильная версия, "latest")
+    image: prom/prometheus:latest
+    # Имя контейнера
+    container_name: prometheus
+    ports:
+      # "Порт VPS":"Порт внутри контейнера" (для открытия порта "9090" в браузере)
+      - "9090:9090"
+    # Секция для добавления записей в виртуальный файл "/etc/hosts" внутри контейнера
+    extra_hosts:
+      # Связь "VPS - контейнер"
+      - "host.docker.internal:host-gateway"
+    # Секция для работы с дисковыми ресурсами (тома)
+    volumes:
+      # Проброс файла настроек в контейнер
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      # Проброс пути хранения данных (на случай перезагрузки контейнера)
+      - prometheus_storage:/prometheus
+    # Секция для добавления специфических настроек
+    command:
+      # Проброс файла настроек внутри контейнера
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      # Настройка лимита сохраняемых данных (2ГБ)
+      - '--storage.tsdb.retention.size=2GB'
+
+  # Контейнер "Grafana"
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_storage:/var/lib/grafana
+    # Секция для указания порядка запуска контейнеров
+    depends_on:
+      - prometheus
+
+# Блок объявления томов
+volumes:
+  # "/var/lib/docker/volumes/" (по умолчанию для Linux)
+  prometheus_storage:
+  grafana_storage:
