@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+п»їusing Microsoft.EntityFrameworkCore;
 using My_Stud_Proj.Helpers;
 using My_Stud_Proj.Interfaces;
 using My_Stud_Proj.Repositories;
@@ -23,17 +23,17 @@ namespace My_Stud_Proj
             builder.Services.AddScoped<IUsersRepository, DbUsersRepository>();
             builder.Services.AddSingleton<MetricsService>();
 
-            // создаем точку входа для OTel-инструментария
+            // СЃРѕР·РґР°РµРј С‚РѕС‡РєСѓ РІС…РѕРґР° РґР»СЏ OTel-РёРЅСЃС‚СЂСѓРјРµРЅС‚Р°СЂРёСЏ
             builder.Services.AddOpenTelemetry()
-                // настраиваем MeterProvider ("диспетчер системы метрик")
+                // РЅР°СЃС‚СЂР°РёРІР°РµРј MeterProvider ("РґРёСЃРїРµС‚С‡РµСЂ СЃРёСЃС‚РµРјС‹ РјРµС‚СЂРёРє")
                 .WithMetrics(metrics =>
                 {
                     metrics
-                        // активируем автоматический сбор "ASP.NET Core"-метрик (данных о входящих HTTP-запросах)
+                        // Р°РєС‚РёРІРёСЂСѓРµРј Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРёР№ СЃР±РѕСЂ "ASP.NET Core"-РјРµС‚СЂРёРє (РґР°РЅРЅС‹С… Рѕ РІС…РѕРґСЏС‰РёС… HTTP-Р·Р°РїСЂРѕСЃР°С…)
                         .AddAspNetCoreInstrumentation()
-                        // регистрируем собственную метрику
+                        // СЂРµРіРёСЃС‚СЂРёСЂСѓРµРј СЃРѕР±СЃС‚РІРµРЅРЅСѓСЋ РјРµС‚СЂРёРєСѓ
                         .AddMeter("MonitoringMetrics")
-                        // конвертируем собранные метрики в формат для Prometheus
+                        // РєРѕРЅРІРµСЂС‚РёСЂСѓРµРј СЃРѕР±СЂР°РЅРЅС‹Рµ РјРµС‚СЂРёРєРё РІ С„РѕСЂРјР°С‚ РґР»СЏ Prometheus
                         .AddPrometheusExporter();
                 });
 
@@ -48,7 +48,7 @@ namespace My_Stud_Proj
                 pattern: "{controller=Home}/{action=Index}/{id?}"
             );
 
-            // добавляем эндпоинт ("/metrics") для "визита" Prometheus
+            // РґРѕР±Р°РІР»СЏРµРј СЌРЅРґРїРѕРёРЅС‚ ("/metrics") РґР»СЏ "РІРёР·РёС‚Р°" Prometheus
             app.UseOpenTelemetryPrometheusScrapingEndpoint();
 
             app.Run();
