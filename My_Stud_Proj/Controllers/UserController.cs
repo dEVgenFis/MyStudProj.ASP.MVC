@@ -17,9 +17,9 @@ namespace My_Stud_Proj.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(Guid id, string login)
+        public async Task<IActionResult> Index(Guid id, string login)
         {
-            var userDb = _usersRepository.TryGetById(id);
+            var userDb = await _usersRepository.TryGetByIdAsync(id);
             if (userDb is null || userDb.Login != login)
             {
                 return NotFound();
@@ -28,9 +28,9 @@ namespace My_Stud_Proj.Controllers
         }
 
         [HttpPost]
-        public IActionResult Authorization(string login, string password)
+        public async Task<IActionResult> Authorization(string login, string password)
         {
-            var userDb = _usersRepository.TryGetByLogin(login);
+            var userDb = await _usersRepository.TryGetByLoginAsync(login);
             if (userDb is null)
             {
                 return NotFound("Пользователь не найден");
@@ -42,83 +42,84 @@ namespace My_Stud_Proj.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(string login, string password, string name, string date)
+        public async Task<IActionResult> Create(string login, string password, string name, string date)
         {
-            foreach (var userDb in _usersRepository.GetAll())
+            var usersDb = await _usersRepository.GetAllAsync();
+            foreach (var userDb in usersDb)
             {
                 if (userDb.Login == login)
                 {
                     return BadRequest("Пользователь уже существует");
                 }
             }
-            var newUser = _usersRepository.Add(login, password, name, date);
+            var newUser = await _usersRepository.AddAsync(login, password, name, date);
             return Json(MappingService.MappingToUserViewModel(newUser));
         }
 
         [HttpPost]
-        public IActionResult UpdateSortingValue(Guid id, string login, string list, string sortingValue)
+        public async Task<IActionResult> UpdateSortingValue(Guid id, string login, string list, string sortingValue)
         {
-            var userDb = _usersRepository.TryGetById(id);
+            var userDb = await _usersRepository.TryGetByIdAsync(id);
             if (userDb is null || userDb.Login != login)
             {
                 return NotFound();
             }
-            _usersRepository.UpdateSortingValue(userDb, list, sortingValue);
+            await _usersRepository.UpdateSortingValueAsync(userDb, list, sortingValue);
             return Json(MappingService.MappingToUserViewModel(userDb));
         }
 
         [HttpPost]
-        public IActionResult UpdateImage(Guid id, string login, IFormFile avatar)
+        public async Task<IActionResult> UpdateImage(Guid id, string login, IFormFile avatar)
         {
-            var userDb = _usersRepository.TryGetById(id);
+            var userDb = await _usersRepository.TryGetByIdAsync(id);
             if (userDb is null || userDb.Login != login)
             {
                 return NotFound();
             }
-            _usersRepository.SaveImage(userDb, avatar, _appEnvironment);
+            await _usersRepository.SaveImageAsync(userDb, avatar, _appEnvironment);
             return Json(MappingService.MappingToUserViewModel(userDb));
         }
 
         [HttpPost]
-        public IActionResult UpdateGeoposition(Guid id, string login, string geoPosition)
+        public async Task<IActionResult> UpdateGeoposition(Guid id, string login, string geoPosition)
         {
-            var userDb = _usersRepository.TryGetById(id);
+            var userDb = await _usersRepository.TryGetByIdAsync(id);
             if (userDb is null || userDb.Login != login)
             {
                 return NotFound();
             }
-            _usersRepository.UpdateGeoposition(userDb, geoPosition);
+            await _usersRepository.UpdateGeopositionAsync(userDb, geoPosition);
             return Json(MappingService.MappingToUserViewModel(userDb));
         }
 
         [HttpPost]
-        public IActionResult UpdateGameList(Guid id, string login, string gameKey = "", bool wrong = false)
+        public async Task<IActionResult> UpdateGameList(Guid id, string login, string gameKey = "", bool wrong = false)
         {
-            var userDb = _usersRepository.TryGetById(id);
+            var userDb = await _usersRepository.TryGetByIdAsync(id);
             if (userDb is null || userDb.Login != login)
             {
                 return NotFound();
             }
-            _usersRepository.UpdateGameList(userDb, gameKey, wrong);
+            await _usersRepository.UpdateGameListAsync(userDb, gameKey, wrong);
             return Json(MappingService.MappingToUserViewModel(userDb));
         }
 
         [HttpPost]
-        public IActionResult UpdateInfo(Guid id, string login, string firstName, string surName)
+        public async Task<IActionResult> UpdateInfo(Guid id, string login, string firstName, string surName)
         {
-            var userDb = _usersRepository.TryGetById(id);
+            var userDb = await _usersRepository.TryGetByIdAsync(id);
             if (userDb is null || userDb.Login != login)
             {
                 return NotFound();
             }
-            _usersRepository.UpdateInfo(userDb, firstName, surName);
+            await _usersRepository.UpdateInfoAsync(userDb, firstName, surName);
             return Json(MappingService.MappingToUserViewModel(userDb));
         }
 
         [HttpPost]
-        public IActionResult CheckPassword(Guid id, string login, string passwordPart)
+        public async Task<IActionResult> CheckPassword(Guid id, string login, string passwordPart)
         {
-            var userDb = _usersRepository.TryGetById(id);
+            var userDb = await _usersRepository.TryGetByIdAsync(id);
             if (userDb is null || userDb.Login != login)
             {
                 return NotFound();
@@ -135,40 +136,40 @@ namespace My_Stud_Proj.Controllers
         }
 
         [HttpPost]
-        public IActionResult UpdatePassword(Guid id, string login, string newPassword)
+        public async Task<IActionResult> UpdatePassword(Guid id, string login, string newPassword)
         {
-            var userDb = _usersRepository.TryGetById(id);
+            var userDb = await _usersRepository.TryGetByIdAsync(id);
             if (userDb is null || userDb.Login != login)
             {
                 return NotFound();
             }
-            _usersRepository.UpdatePassword(userDb, newPassword);
+            await _usersRepository.UpdatePasswordAsync(userDb, newPassword);
             return Ok();
         }
 
         [HttpPost]
-        public IActionResult SaveCanvasImage(Guid id, string login, IFormFile canvas)
+        public async Task<IActionResult> SaveCanvasImage(Guid id, string login, IFormFile canvas)
         {
-            var userDb = _usersRepository.TryGetById(id);
+            var userDb = await _usersRepository.TryGetByIdAsync(id);
             if (userDb is null || userDb.Login != login)
             {
                 return NotFound();
             }
-            _usersRepository.SaveImage(userDb, canvas, _appEnvironment);
+            await _usersRepository.SaveImageAsync(userDb, canvas, _appEnvironment);
             return Ok();
         }
 
         [HttpDelete]
-        public IActionResult Delete(Guid id, string login, string password)
+        public async Task<IActionResult> Delete(Guid id, string login, string password)
         {
-            var userDb = _usersRepository.TryGetById(id);
+            var userDb = await _usersRepository.TryGetByIdAsync(id);
             if (userDb is null || userDb.Login != login)
             {
                 return NotFound();
             }
             if (userDb.Password == password)
             {
-                _usersRepository.Delete(userDb, _appEnvironment);
+                await _usersRepository.DeleteAsync(userDb, _appEnvironment);
             } else
             {
                 return BadRequest("Неверный пароль");

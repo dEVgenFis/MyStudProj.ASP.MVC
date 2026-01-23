@@ -25,36 +25,35 @@ namespace My_Stud_Proj.Controllers
             return PartialView("_Feedback");
         }
 
-        public IActionResult GetAll(Guid id, string sortingValue)
+        public async Task<IActionResult> GetAll(Guid id, string sortingValue)
         {
-            var developerDb = _developersRepository.TryGetById(id);
-            var usersDb = _usersRepository.GetAll();
+            var developerDb = await _developersRepository.TryGetByIdAsync(id);
             if (developerDb is null)
             {
                 return NotFound();
             }
-            var feedbacksDbList = _feedbacksRepository.TryGetFeedbacksListById(id);
+            var feedbacksDbList = await _feedbacksRepository.TryGetFeedbacksListByIdAsync(id);
             var feedbacksViewModelList = MappingService.MappingToFeedbacksViewModelList(feedbacksDbList);
             feedbacksViewModelList.List = SortingService.SortingFeedbacksList(feedbacksViewModelList.List, sortingValue);
             var data = JsonSerializer.Serialize(feedbacksViewModelList, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
             return Ok(data);
         }
 
-        public IActionResult Add(Guid developerId, Guid userId, string login, byte feedbackGrade, string dateTime, string feedbackText = "")
+        public async Task<IActionResult> Add(Guid developerId, Guid userId, string login, byte feedbackGrade, string dateTime, string feedbackText = "")
         {
-            var existingFeedbackList = _feedbacksRepository.TryGetFeedbacksListById(developerId);
-            var userDb = _usersRepository.TryGetById(userId);
+            var existingFeedbackList = await _feedbacksRepository.TryGetFeedbacksListByIdAsync(developerId);
+            var userDb = await _usersRepository.TryGetByIdAsync(userId);
             if (existingFeedbackList is null || userDb is null || userDb.Login != login)
             {
                 return NotFound();
             }
-            _feedbacksRepository.Add(existingFeedbackList, userDb, feedbackGrade, feedbackText, dateTime);
+            await _feedbacksRepository.AddAsync(existingFeedbackList, userDb, feedbackGrade, feedbackText, dateTime);
             return Ok();
         }
 
-        public IActionResult Update(Guid developerId, Guid feedbackId, byte grade, string text, string dateTime)
+        public async Task<IActionResult> Update(Guid developerId, Guid feedbackId, byte grade, string text, string dateTime)
         {
-            var existingFeedbackList = _feedbacksRepository.TryGetFeedbacksListById(developerId);
+            var existingFeedbackList = await _feedbacksRepository.TryGetFeedbacksListByIdAsync(developerId);
             if (existingFeedbackList is null)
             {
                 return NotFound();
@@ -64,14 +63,14 @@ namespace My_Stud_Proj.Controllers
             {
                 return NotFound();
             }
-            _feedbacksRepository.Update(existingFeedbackList, existingFeedback, grade, text, dateTime);
+            await _feedbacksRepository.UpdateAsync(existingFeedbackList, existingFeedback, grade, text, dateTime);
             return Ok();
         }
 
         [HttpDelete]
-        public IActionResult Delete(Guid developerId, Guid feedbackId)
+        public async Task<IActionResult> Delete(Guid developerId, Guid feedbackId)
         {
-            var existingFeedbackList = _feedbacksRepository.TryGetFeedbacksListById(developerId);
+            var existingFeedbackList = await _feedbacksRepository.TryGetFeedbacksListByIdAsync(developerId);
             if (existingFeedbackList is null)
             {
                 return NotFound();
@@ -81,7 +80,7 @@ namespace My_Stud_Proj.Controllers
             {
                 return NotFound();
             }
-            _feedbacksRepository.Delete(existingFeedbackList, existingFeedback);
+            await _feedbacksRepository.DeleteAsync(existingFeedbackList, existingFeedback);
             return Ok();
         }
     }

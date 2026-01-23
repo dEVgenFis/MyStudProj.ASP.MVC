@@ -1,4 +1,5 @@
-﻿using My_Stud_Proj.Helpers;
+﻿using Microsoft.EntityFrameworkCore;
+using My_Stud_Proj.Helpers;
 using My_Stud_Proj.Interfaces;
 using My_Stud_Proj.Models;
 
@@ -16,27 +17,27 @@ namespace My_Stud_Proj.Repositories
             _feedbacksRepository = feedbacksRepository;
         }
 
-        public IList<UserDb> GetAll() => _databaseContext.Users.ToList();
+        public async Task<IList<UserDb>> GetAllAsync() => await _databaseContext.Users.ToListAsync();
 
-        public UserDb? TryGetByLogin(string login)
+        public async Task<UserDb?> TryGetByLoginAsync(string login)
         {
-            return _databaseContext.Users.FirstOrDefault(user => user.Login == login);
+            return await _databaseContext.Users.FirstOrDefaultAsync(user => user.Login == login);
         }
 
-        public UserDb? TryGetById(Guid id)
+        public async Task<UserDb?> TryGetByIdAsync(Guid id)
         {
-            return _databaseContext.Users.FirstOrDefault(user => user.Id == id);
+            return await _databaseContext.Users.FirstOrDefaultAsync(user => user.Id == id);
         }
 
-        public UserDb Add(string login, string password, string name, string date)
+        public async Task<UserDb> AddAsync(string login, string password, string name, string date)
         {
             var newUser = new UserDb(login, password, name, date);
             _databaseContext.Users.Add(newUser);
-            _databaseContext.SaveChanges();
+            await _databaseContext.SaveChangesAsync();
             return newUser;
         }
 
-        public void UpdateSortingValue(UserDb userDb, string list, string sortingValue)
+        public async Task UpdateSortingValueAsync(UserDb userDb, string list, string sortingValue)
         {
             switch (list)
             {
@@ -47,16 +48,16 @@ namespace My_Stud_Proj.Repositories
                     userDb.SortingFdbackListValue = sortingValue;
                     break;
             }
-            _databaseContext.SaveChanges();
+            await _databaseContext.SaveChangesAsync();
         }
 
-        public void UpdateGeoposition(UserDb userDb, string geoPosition)
+        public async Task UpdateGeopositionAsync(UserDb userDb, string geoPosition)
         {
             userDb.Geolocation = geoPosition;
-            _databaseContext.SaveChanges();
+            await _databaseContext.SaveChangesAsync();
         }
 
-        public void UpdateGameList(UserDb userDb, string gameKey, bool wrong)
+        public async Task UpdateGameListAsync(UserDb userDb, string gameKey, bool wrong)
         {
             // останавливаем выполнение функции в случае, когда Пользователь авторизован одновременно с нескольких устройств
             if (string.IsNullOrEmpty(userDb.GamesListString))
@@ -76,29 +77,29 @@ namespace My_Stud_Proj.Repositories
                     userDb.GameWinner = true;
                     userDb.TotalGameAttempts++;
                     // обновляем данные Пользователя в таблице отзывов
-                    DbService.UpdateFeedbackUserInfo(userDb, "GamesListString", userDb.TotalGameAttempts.ToString(), _feedbacksRepository);
+                    await DbService.UpdateFeedbackUserInfoAsync(userDb, "GamesListString", userDb.TotalGameAttempts.ToString(), _feedbacksRepository);
                     ///
                 }
             }
-            _databaseContext.SaveChanges();
+            await _databaseContext.SaveChangesAsync();
         }
 
-        public void UpdateInfo(UserDb userDb, string firstName, string surName)
+        public async Task UpdateInfoAsync(UserDb userDb, string firstName, string surName)
         {
             userDb.FirstName = firstName;
             userDb.SurName = surName;
             var userNewName = userDb.SurName == "-" ? userDb.FirstName : userDb.FirstName + " " + userDb.SurName[0] + ".";
-            DbService.UpdateFeedbackUserInfo(userDb, "UserName", userNewName, _feedbacksRepository);
-            _databaseContext.SaveChanges();
+            await DbService.UpdateFeedbackUserInfoAsync(userDb, "UserName", userNewName, _feedbacksRepository);
+            await _databaseContext.SaveChangesAsync();
         }
 
-        public void UpdatePassword(UserDb userDb, string newPassword)
+        public async Task UpdatePasswordAsync(UserDb userDb, string newPassword)
         {
             userDb.Password = newPassword;
-            _databaseContext.SaveChanges();
+            await _databaseContext.SaveChangesAsync();
         }
 
-        public void SaveImage(UserDb userDb, IFormFile image, IWebHostEnvironment appEnvironment)
+        public async Task SaveImageAsync(UserDb userDb, IFormFile image, IWebHostEnvironment appEnvironment)
         {
             if (image is not null)
             {
@@ -119,7 +120,7 @@ namespace My_Stud_Proj.Repositories
                             image.CopyTo(fileStream);
                         }
                         userDb.AvatarPath = $"/img/users/{userDb.Id}/avatar/" + image.FileName;
-                        DbService.UpdateFeedbackUserInfo(userDb, "SaveImage", userDb.AvatarPath, _feedbacksRepository);
+                        await DbService.UpdateFeedbackUserInfoAsync(userDb, "SaveImage", userDb.AvatarPath, _feedbacksRepository);
                         break;
                     case "canvas":
                         var canvasFolderFullness = Directory.GetFiles(imagePath).Length;
@@ -138,16 +139,16 @@ namespace My_Stud_Proj.Repositories
                     Directory.Delete(userImagesFolder, true);
                 }
                 userDb.AvatarPath = "img/Avatar.png";
-                DbService.UpdateFeedbackUserInfo(userDb, "SaveImage", "img/Avatar.png", _feedbacksRepository);
+                await DbService.UpdateFeedbackUserInfoAsync(userDb, "SaveImage", "img/Avatar.png", _feedbacksRepository);
             }
-            _databaseContext.SaveChanges();
+            await _databaseContext.SaveChangesAsync();
         }
 
-        public void Delete(UserDb userDb, IWebHostEnvironment appEnvironment)
+        public async Task DeleteAsync(UserDb userDb, IWebHostEnvironment appEnvironment)
         {
-            DbService.UpdateFeedbackUserInfo(userDb, "SaveImage", "img/Avatar.png", _feedbacksRepository);
+            await DbService.UpdateFeedbackUserInfoAsync(userDb, "SaveImage", "img/Avatar.png", _feedbacksRepository);
             _databaseContext.Remove(userDb);
-            _databaseContext.SaveChanges();
+            await _databaseContext.SaveChangesAsync();
             var userImagesFolder = Path.Combine(appEnvironment.WebRootPath + $"/img/users/{userDb.Id}");
             if (Directory.Exists(userImagesFolder))
             {

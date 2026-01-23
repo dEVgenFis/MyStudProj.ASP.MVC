@@ -13,11 +13,11 @@ namespace My_Stud_Proj.Repositories
             _databaseContext = databaseContext;
         }
 
-        public IList<FeedbacksDbList> GetAll() => _databaseContext.FeedbacksList.Include(feedbacksDbList => feedbacksDbList.List).ToList();
+        public async Task<IList<FeedbacksDbList>> GetAllAsync() => await _databaseContext.FeedbacksList.Include(feedbacksDbList => feedbacksDbList.List).ToListAsync();
 
-        public FeedbacksDbList? TryGetFeedbacksListById(Guid id)
+        public async Task<FeedbacksDbList?> TryGetFeedbacksListByIdAsync(Guid id)
         {
-            return _databaseContext.FeedbacksList.Include(feedbacksDbList => feedbacksDbList.List).FirstOrDefault(feedbackList => feedbackList.DeveloperId == id);
+            return await _databaseContext.FeedbacksList.Include(feedbacksDbList => feedbacksDbList.List).FirstOrDefaultAsync(feedbackList => feedbackList.DeveloperId == id);
         }
 
         public FeedbackDb? TryGetFeedbackById(Guid id, FeedbacksDbList feedbackList)
@@ -25,15 +25,15 @@ namespace My_Stud_Proj.Repositories
             return feedbackList.List.FirstOrDefault(feedback => feedback.Id == id);
         }
 
-        public FeedbacksDbList Create(Guid developerId)
+        public async Task<FeedbacksDbList> CreateAsync(Guid developerId)
         {
             var feedbackList = new FeedbacksDbList(developerId);
             _databaseContext.FeedbacksList.Add(feedbackList);
-            _databaseContext.SaveChanges();
+            await _databaseContext.SaveChangesAsync();
             return feedbackList;
         }
 
-        public void Add(FeedbacksDbList feedbackList, UserDb userDb, byte feedbackGrade, string feedbackText, string dateTime)
+        public async Task AddAsync(FeedbacksDbList feedbackList, UserDb userDb, byte feedbackGrade, string feedbackText, string dateTime)
         {
             var newFeedback = new FeedbackDb(
                 userDb.Id,
@@ -48,10 +48,10 @@ namespace My_Stud_Proj.Repositories
             newFeedback.FeedbacksDbList = feedbackList;
             feedbackList.List.Insert(0, newFeedback);
             feedbackList.TotalGrade += newFeedback.FeedbackGrade;
-            _databaseContext.SaveChanges();
+            await _databaseContext.SaveChangesAsync();
         }
 
-        public void Update(FeedbacksDbList feedbackDbList, FeedbackDb feedback, byte grade, string text, string dateTime)
+        public async Task UpdateAsync(FeedbacksDbList feedbackDbList, FeedbackDb feedback, byte grade, string text, string dateTime)
         {
             feedbackDbList.TotalGrade -= feedback.FeedbackGrade;
             feedback.FeedbackGrade = grade;
@@ -59,14 +59,14 @@ namespace My_Stud_Proj.Repositories
             feedback.FeedbackText = text is null ? "" : text;
             feedback.DateTime = dateTime;
             feedback.FeedbackUpdate = true;
-            _databaseContext.SaveChanges();
+            await _databaseContext.SaveChangesAsync();
         }
 
-        public void Delete(FeedbacksDbList feedbackList, FeedbackDb feedback)
+        public async Task DeleteAsync(FeedbacksDbList feedbackList, FeedbackDb feedback)
         {
             feedbackList.TotalGrade -= feedback.FeedbackGrade;
             feedbackList.List.Remove(feedback);
-            _databaseContext.SaveChanges();
+            await _databaseContext.SaveChangesAsync();
         }
     }
 }

@@ -4,12 +4,12 @@ namespace My_Stud_Proj.Interfaces
 {
     public interface IFeedbacksRepository
     {
-        IList<FeedbacksDbList> GetAll();
-        FeedbacksDbList? TryGetFeedbacksListById(Guid id);
+        Task<IList<FeedbacksDbList>> GetAllAsync();
+        Task<FeedbacksDbList?> TryGetFeedbacksListByIdAsync(Guid id);
         FeedbackDb? TryGetFeedbackById(Guid id, FeedbacksDbList feedbackList);
-        FeedbacksDbList Create(Guid developerId);
-        void Add(FeedbacksDbList feedbackList, UserDb userDb, byte feedbackGrade, string feedbackText, string dateTime);
-        void Update(FeedbacksDbList feedbackDbList, FeedbackDb feedback, byte grade, string text, string dateTime);
-        void Delete(FeedbacksDbList feedbackList, FeedbackDb feedback);
+        Task<FeedbacksDbList> CreateAsync(Guid developerId);
+        Task AddAsync(FeedbacksDbList feedbackList, UserDb userDb, byte feedbackGrade, string feedbackText, string dateTime);
+        Task UpdateAsync(FeedbacksDbList feedbackDbList, FeedbackDb feedback, byte grade, string text, string dateTime);
+        Task DeleteAsync(FeedbacksDbList feedbackList, FeedbackDb feedback);
     }
 }

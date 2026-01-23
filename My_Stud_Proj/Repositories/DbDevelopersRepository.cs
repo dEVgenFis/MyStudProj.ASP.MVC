@@ -1,4 +1,5 @@
-﻿using My_Stud_Proj.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using My_Stud_Proj.Interfaces;
 using My_Stud_Proj.Models;
 
 namespace My_Stud_Proj.Repositories
@@ -12,11 +13,11 @@ namespace My_Stud_Proj.Repositories
             _databaseContext = databaseContext;
         }
 
-        public IList<DeveloperDb> GetAll() => _databaseContext.Developers.ToList();
+        public async Task<IList<DeveloperDb>> GetAllAsync() => await _databaseContext.Developers.ToListAsync();
 
-        public DeveloperDb? TryGetById(Guid id)
+        public async Task<DeveloperDb?> TryGetByIdAsync(Guid id)
         {
-            return _databaseContext.Developers.FirstOrDefault(developer => developer.Id == id);
+            return await _databaseContext.Developers.FirstOrDefaultAsync(developer => developer.Id == id);
         }
     }
 }

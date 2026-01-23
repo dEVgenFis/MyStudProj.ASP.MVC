@@ -31,13 +31,13 @@ namespace My_Stud_Proj.Controllers
             return Ok();
         }
 
-        public IActionResult Sorting(string sortingValue)
+        public async Task<IActionResult> Sorting(string sortingValue)
         {
-            var developersDb = _developersRepository.GetAll();
+            var developersDb = await _developersRepository.GetAllAsync();
             var developersViewModel = MappingService.MappingToDevelopersViewModelList(developersDb);
             foreach (var developer in developersViewModel)
             {
-                var feedbacksDbList = _feedbacksRepository.TryGetFeedbacksListById(developer.Id) ?? _feedbacksRepository.Create(developer.Id);
+                var feedbacksDbList = await _feedbacksRepository.TryGetFeedbacksListByIdAsync(developer.Id) ?? await _feedbacksRepository.CreateAsync(developer.Id);
                 developer.Rating = MappingService.MappingToFeedbacksViewModelList(feedbacksDbList).Rating;
             }
             return PartialView("_Catalog", SortingService.SortingDevelopersList(developersViewModel, sortingValue));

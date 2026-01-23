@@ -5,9 +5,9 @@ namespace My_Stud_Proj.Helpers
 {
     public static class DbService
     {
-        public static void UpdateFeedbackUserInfo(UserDb userDb, string property, string userNewInfo, IFeedbacksRepository feedbacksRepository)
+        public static async Task UpdateFeedbackUserInfoAsync(UserDb userDb, string property, string userNewInfo, IFeedbacksRepository feedbacksRepository)
         {
-            var feedbacksDbLists = feedbacksRepository.GetAll();
+            var feedbacksDbLists = await feedbacksRepository.GetAllAsync();
             foreach (var feedbacksDbList in feedbacksDbLists)
             {
                 foreach (var feedbackDb in feedbacksDbList.List)

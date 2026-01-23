@@ -16,25 +16,25 @@ namespace My_Stud_Proj.Controllers
             _feedbacksRepository = feedbacksRepository;
         }
 
-        public IActionResult Index(Guid developerId, int screenWidth)
+        public async Task<IActionResult> Index(Guid developerId, int screenWidth)
         {
             ViewBag.ScreenWidth = screenWidth;
-            var developerDb = _developersRepository.TryGetById(developerId);
+            var developerDb = await _developersRepository.TryGetByIdAsync(developerId);
             if (developerDb is null)
             {
                 return BadRequest("Разработчик не найден.");
             }
             var developerViewModel = MappingService.MappingToDeveloperViewModel(developerDb);
-            var feedbacksDbList = _feedbacksRepository.TryGetFeedbacksListById(developerViewModel.Id);
+            var feedbacksDbList = await _feedbacksRepository.TryGetFeedbacksListByIdAsync(developerViewModel.Id);
             developerViewModel.Rating = MappingService.MappingToFeedbacksViewModelList(feedbacksDbList).Rating;
             return PartialView("_Developer", developerViewModel);
         }
 
-        public string GetRating(Guid developerId)
+        public async Task<string> GetRating(Guid developerId)
         {
-            var developerDb = _developersRepository.TryGetById(developerId);
+            var developerDb = await _developersRepository.TryGetByIdAsync(developerId);
             var developerViewModel = MappingService.MappingToDeveloperViewModel(developerDb);
-            var feedbacksDbList = _feedbacksRepository.TryGetFeedbacksListById(developerViewModel.Id);
+            var feedbacksDbList = await _feedbacksRepository.TryGetFeedbacksListByIdAsync(developerViewModel.Id);
             developerViewModel.Rating = MappingService.MappingToFeedbacksViewModelList(feedbacksDbList).Rating;
             return developerViewModel.Rating;
         }
