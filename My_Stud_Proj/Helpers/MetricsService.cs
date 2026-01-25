@@ -18,13 +18,13 @@ namespace My_Stud_Proj.Helpers
             _screenCategoreCounter = meter.CreateCounter<long>("user_screen_type_total");
         }
 
-        public void RecordRequest(string controller, string method)
+        public void RecordRequest(string controller)
         {
             // увеличиваем "счетчик" на единицу у метрики с конкретным набором меток (тегов)
-            _requestCounter.Add(1, new TagList { { "controller", controller }, { "method", method } });
+            _requestCounter.Add(1, new TagList { { "controller", controller } });
             // вывод по запросу "localhost:5000/metrics"
             // # TYPE request_home_index_total counter
-            // request_home_index_total{otel_scope_name="MonitoringMetrics",controller="название контроллера",method="название метода"} <количество, ед> <временная метка, мс>
+            // request_home_index_total{otel_scope_name="MonitoringMetrics",controller="название контроллера"} <количество, ед> <временная метка, мс>
         }
 
         public void RecordScreenCategory(int screenWidth)

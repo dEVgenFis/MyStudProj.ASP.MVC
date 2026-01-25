@@ -26,7 +26,7 @@ namespace My_Stud_Proj.Controllers
 
         public IActionResult MeasuringMetrics(int screenWidth)
         {
-            _metricsService.RecordRequest("Home", "MeasuringMetrics");
+            _metricsService.RecordRequest("Home");
             _metricsService.RecordScreenCategory(screenWidth);
             return Ok();
         }

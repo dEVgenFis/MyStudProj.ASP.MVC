@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.EntityFrameworkCore;
 using My_Stud_Proj.Helpers;
 using My_Stud_Proj.Interfaces;
 using My_Stud_Proj.Repositories;
@@ -29,8 +30,6 @@ namespace My_Stud_Proj
                 .WithMetrics(metrics =>
                 {
                     metrics
-                        // активируем автоматический сбор "ASP.NET Core"-метрик (данных о входящих HTTP-запросах)
-                        .AddAspNetCoreInstrumentation()
                         // регистрируем собственную метрику
                         .AddMeter("MonitoringMetrics")
                         // конвертируем собранные метрики в формат для Prometheus
@@ -39,7 +38,13 @@ namespace My_Stud_Proj
 
             var app = builder.Build();
 
-            app.UseHttpsRedirection();
+            // устанавливаем HTTP-заголовки для компонента ForwardedHeadersMiddleware
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                // "разрешаем" серверу принять от Nginx реальный IP-адрес клиента (XForwardedFor) и протокол запроса (XForwardedProto)
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
+
             app.UseStaticFiles();
             app.UseRouting();
 
