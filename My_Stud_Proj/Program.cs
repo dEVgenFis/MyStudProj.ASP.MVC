@@ -4,6 +4,7 @@ using My_Stud_Proj.Helpers;
 using My_Stud_Proj.Interfaces;
 using My_Stud_Proj.Repositories;
 using OpenTelemetry.Metrics;
+using Serilog;
 
 namespace My_Stud_Proj
 {
@@ -36,13 +37,26 @@ namespace My_Stud_Proj
                         .AddPrometheusExporter();
                 });
 
+            // заменяем встроенную систему логирования на Serilog
+            /*
+             * "context" - объект-"снимок" (экземпляр класса "HostBuilderContext") состояния приложения в момент сборки
+             * "configuration" - объект настроек Serilog
+             * "ReadFrom.Configuration(context.Configuration)" - настраиваем Serilog файлом "appsettings.json"
+             */
+            builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
+
             var app = builder.Build();
 
-            // устанавливаем HTTP-заголовки для компонента ForwardedHeadersMiddleware
+            // "читаем" заголовки для компонента ForwardedHeadersMiddleware
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
-                // "разрешаем" серверу принять от Nginx реальный IP-адрес клиента (XForwardedFor) и протокол запроса (XForwardedProto)
-                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+                // "разрешаем" Kestrel принять от Nginx реальные IP клиента (XForwardedFor), протокол запроса (XForwardedProto) и адрес запроса (XForwardedHost)
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost
+                /*
+                 * HttpContext.Connection.RemoteIpAddress = XForwardedFor
+                 * HttpContext.Request.Scheme = XForwardedProto
+                 * HttpContext.Request.Host = XForwardedHost
+                 */
             });
 
             app.UseStaticFiles();

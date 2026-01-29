@@ -12,11 +12,14 @@ namespace My_Stud_Proj.Controllers
 
         private readonly MetricsService _metricsService;
 
-        public HomeController(IDevelopersRepository developersRepository, IFeedbacksRepository feedbacksRepository, MetricsService metricsService)
+        private readonly ILogger<HomeController> _logger;
+
+        public HomeController(IDevelopersRepository developersRepository, IFeedbacksRepository feedbacksRepository, MetricsService metricsService, ILogger<HomeController> logger)
         {
             _developersRepository = developersRepository;
             _feedbacksRepository = feedbacksRepository;
             _metricsService = metricsService;
+            _logger = logger;
         }
 
         public IActionResult Index()
@@ -28,6 +31,12 @@ namespace My_Stud_Proj.Controllers
         {
             _metricsService.RecordRequest("Home");
             _metricsService.RecordScreenCategory(screenWidth);
+
+            var userIP = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+            var userAgent = Request.Headers["User-Agent"].ToString();
+            // создаем лог-запись
+            _logger.LogInformation("Посещение сайта. IP: {ClientIP}, Browser: {Browser}.", userIP, userAgent);
+            ///
             return Ok();
         }
 
