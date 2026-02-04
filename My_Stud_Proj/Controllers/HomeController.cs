@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+п»їusing Microsoft.AspNetCore.Mvc;
 using My_Stud_Proj.Helpers;
 using My_Stud_Proj.Interfaces;
 
@@ -34,8 +34,8 @@ namespace My_Stud_Proj.Controllers
 
             var userIP = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
             var userAgent = Request.Headers["User-Agent"].ToString();
-            // создаем лог-запись
-            _logger.LogInformation("Посещение сайта. IP: {ClientIP}, Browser: {Browser}.", userIP, userAgent);
+            // СЃРѕР·РґР°РµРј Р»РѕРі-Р·Р°РїРёСЃСЊ
+            _logger.LogInformation("РџРѕСЃРµС‰РµРЅРёРµ СЃР°Р№С‚Р°. IP: {ClientIP}, Browser: {Browser}.", userIP, userAgent);
             ///
             return Ok();
         }
