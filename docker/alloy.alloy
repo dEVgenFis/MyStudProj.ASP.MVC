@@ -1,0 +1,139 @@
+// Блок логирования работы самого агента Alloy (в консоль)
+logging {
+  // Уровень логирования
+  level  = "info"
+
+  // Формат логирования ("Key-Value", стандарт для Grafana)
+  format = "logfmt"
+}
+
+// Блок поиска файлов на локальном диске
+local.file_match "dotnet_logs" {
+  path_targets = [
+    {
+      /*
+        Скрытая ("__") временная обязательная метка "__address__" указывает на сетевой адрес точки сбора информации
+        (т.к. лог-файл не является сетевым узлом, в метке указывается любая "заглушка")
+      */
+      "__address__" = "localhost",
+
+      // Путь, по которому Alloy ищет лог-файлы
+      "__path__"    = "/var/log/*.json",
+
+      // Метка для поиска логов в Grafana
+      "job"         = "my_stud_proj",
+    },
+  ]
+}
+
+// Блок чтения данных из файлов
+loki.source.file "dotnet_files" {
+  // Обращаемся к списку файлов из блока "dotnet_logs"
+  targets    = local.file_match.dotnet_logs.targets
+
+  // Маршрутизатор "forward_to" отправляет найденные в блоке "dotnet_logs" файлы в блок обработки данных ("add_geoip")
+  forward_to = [loki.process.add_geoip.receiver]
+}
+
+// Блок обработки данных
+loki.process "add_geoip" {
+  // Стадия извлечения JSON-объекта в переменную "content"
+  stage.regex {
+    /*
+      "[^{]*"  - игнорирование всех символов перед JSON-объектом
+      "\{.*\}" - JSON-объект
+    */
+    expression = "^[^{]*(?P<content>\\{.*\\})$"
+  }
+
+  // Стадия извлечения данных из JSON-объекта в переменные Alloy
+  stage.json {
+    source      = "content"
+    expressions = {
+      "msg"       = "\"@mt\"",
+      "client_ip" = "ClientIP",
+      "browser"   = "Browser",
+    }
+  }
+
+  // Стадия создания временной переменной "check_ip" для отсеивания системных логов
+  stage.template {
+    source   = "check_ip"
+
+    // Шаблон записи значения в переменную "check_ip"
+    template = "{{ if .client_ip }}{{ .client_ip }}{{ else }}empty{{ end }}"
+  }
+
+  // Стадия отсеивания системных логов
+  stage.drop {
+    source     = "check_ip"
+
+    // При "check_ip" = "empty" лог-строка "не проходит проверку" и не попадает в БД Loki
+    expression = "empty"
+  }
+
+  // Стадия подключения MaxMind-БД ("GeoLite2-City.mmdb") для "обогащения" лога геометками
+  stage.geoip {
+    db      = "/etc/alloy/GeoLite2-City.mmdb"
+    source  = "client_ip"
+
+    // Формат внутренней структуры MaxMind-БД
+    db_type = "city"
+  }
+
+  // Стадия подключения MaxMind-БД ("GeoLite2-ASN.mmdb") для "обогащения" лога информацией об интернет-провайдере
+  stage.geoip {
+    db      = "/etc/alloy/GeoLite2-ASN.mmdb"
+    source  = "client_ip"
+    db_type = "asn"
+  }
+
+  // Стадия "обогащения" лога геометкой "country_code" (код страны)
+  stage.labels {
+    values = {
+      "country_code" = "geoip_country_code",
+    }
+  }
+
+  // Стадия "обогащения" лога географическими структурными метаданными
+  stage.structured_metadata {
+    values = {
+      "client_ip" = "client_ip",
+
+      // Широта
+      "lat"       = "geoip_location_latitude",
+
+      // Долгота
+      "lon"       = "geoip_location_longitude",
+
+      // Название владельца сети
+      "provider"  = "geoip_autonomous_system_organization",
+    }
+  }
+
+  stage.template {
+    source   = "log_in_loki"
+    template = "{\"Message\":\"Посещение сайта.\",\"OS|Browser\":\"{{ .browser }}\"}"
+  }
+
+  // Стадия изменения текста лога
+  stage.output {
+    source = "log_in_loki"
+  }
+
+  // Стадия закрепления за логом нужных меток
+  stage.label_keep {
+    values = ["job", "country_code"]
+  }
+
+  // Маршрутизатор "forward_to" отправляет измененные лог-строки в блок записи ("dotnet_loki")
+  forward_to = [loki.write.dotnet_loki.receiver]
+}
+
+// Блок записи данных в БД Loki
+loki.write "dotnet_loki" {
+  endpoint {
+    // Отправляем данные по незащищенному соединению в 3100-ый порт домена "loki" (в метод "push")
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+}

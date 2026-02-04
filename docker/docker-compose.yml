@@ -1,3 +1,15 @@
+# Ключ "Extension Field" с якорем "default-logging"
+x-logging: &default-logging
+  # Блок настроек хранения docker-логов
+  logging:
+    # Формат хранения docker-логов
+    driver: "json-file"
+    options:
+      # Параметр, определяющий лимит размера одного лог-файла
+      max-size: "5m"
+      # Параметр, определяющий количество хранимых лог-файлов
+      max-file: "2"
+
 # Блок описания контейнеров
 services:
   # Контейнер "Prometheus"
@@ -6,9 +18,13 @@ services:
     image: prom/prometheus:latest
     # Имя контейнера
     container_name: prometheus
-    ports:
-      # "Порт VPS":"Порт внутри контейнера" (для открытия порта "9090" в браузере)
-      - "9090:9090"
+    # Параметр, позволяющий автоматически перезапустить контейнер при перезагрузке VPS
+    restart: always
+    # Якорь, определяющий формат хранения логов и ограничивающий их размер и количество
+    <<: *default-logging
+    # Параметр, позволяющий открыть порт для соседних docker-контейнеров, но при этом скрыть его от внешней сети
+    expose:
+      - "9090"
     # Секция для добавления записей в виртуальный файл "/etc/hosts" внутри контейнера
     extra_hosts:
       # Связь "VPS - контейнер"
@@ -16,30 +32,71 @@ services:
     # Секция для работы с дисковыми ресурсами (тома)
     volumes:
       # Проброс файла настроек в контейнер
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
       # Проброс пути хранения данных (на случай перезагрузки контейнера)
       - prometheus_storage:/prometheus
     # Секция для добавления специфических настроек
     command:
-      # Проброс файла настроек внутри контейнера
+      # Переопределение файла настроек внутри контейнера
       - '--config.file=/etc/prometheus/prometheus.yml'
       # Настройка лимита сохраняемых данных (2ГБ)
       - '--storage.tsdb.retention.size=2GB'
+
+  # Контейнер "Loki"
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    restart: always
+    <<: *default-logging
+    expose:
+      - "3100"
+    volumes:
+      # Флаг ":ro" ("Read-Only") ограничивает возможность изменения конфигурационного файла на локальном диске
+      - ./loki.yml:/etc/loki/local-config.yaml:ro
+      - loki_storage:/loki
+    command:
+      - '-config.file=/etc/loki/local-config.yaml'
+
+  # Контейнер "Grafana Alloy"
+  alloy:
+    image: grafana/alloy:latest
+    container_name: alloy
+    restart: always
+    <<: *default-logging
+    volumes:
+      - ./alloy.alloy:/etc/alloy/config.alloy:ro
+      - ../My_Stud_Proj/logs:/var/log:ro
+      - ./alloy-data:/var/lib/alloy
+      # Проброс MaxMind-БД в контейнер
+      - ./GeoLite2-City.mmdb:/etc/alloy/GeoLite2-City.mmdb:ro
+      - ./GeoLite2-ASN.mmdb:/etc/alloy/GeoLite2-ASN.mmdb:ro
+    command:
+      - run
+      - '--storage.path=/var/lib/alloy/data'
+      # Связь "Alloy - соседние Docker-контейнеры"
+      - '--server.http.listen-addr=0.0.0.0:12345'
+      - /etc/alloy/config.alloy
+    # Секция для указания порядка запуска контейнеров
+    depends_on:
+      - loki
 
   # Контейнер "Grafana"
   grafana:
     image: grafana/grafana:latest
     container_name: grafana
+    restart: always
+    <<: *default-logging
     ports:
       - "3000:3000"
     volumes:
       - grafana_storage:/var/lib/grafana
-    # Секция для указания порядка запуска контейнеров
     depends_on:
       - prometheus
+      - loki
 
 # Блок объявления томов
 volumes:
   # "/var/lib/docker/volumes/" (по умолчанию для Linux)
   prometheus_storage:
+  loki_storage:
   grafana_storage:
