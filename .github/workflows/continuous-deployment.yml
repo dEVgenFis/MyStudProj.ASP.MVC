@@ -1,0 +1,86 @@
+# Блок, определяющий название скрипта
+name: Continuous deployment My_Stud_Proj to VPS
+
+# Блок, определяющий момент запуска скрипта
+on:
+  push:
+    branches: [master]
+  # Параметр, позволяющий запустить скрипт вручную (кнопка "Run workflow")
+  workflow_dispatch:
+
+# Блок, определяющий шаги скрипта
+jobs:
+  # Секция описания скрипта
+  build-and-deploy:
+    # Ключ, определяющий "виртуальную машину" GitHub Actions, внутри которой будут выполняться шаги скрипта
+    runs-on: ubuntu-latest
+
+    steps:
+    # Шаг: установка на "виртуальную машину" пакета ".NET SDK" (Software Development Kit)
+    # Метка, определяющая название конкретного шага
+    - name: Checkout code
+      # Вызов функции, запускающей действие конкретного шага
+      uses: actions/checkout@v4
+
+    # Шаг: определение параметров установки пакета ".NET SDK"
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      # Секция, определяющая параметры функции "actions/setup-dotnet@v4"
+      with:
+        # Параметр, определяющий версию пакета ".NET SDK"
+        dotnet-version: '8.0.x'
+        # Параметр, позволяющий закэшировать NuGet-пакеты проекта (для ускорения последующих сборок)
+        cache: true
+
+    # Шаг: установка на "виртуальную машину" NuGet-пакетов
+    - name: Restore dependencies
+      # Ключ, определяющий ввод "ручной" команды на "виртуальной машине"
+      run: dotnet restore
+
+    # Шаг: сборка Release-версии проекта (".dll", Dynamic Link Library) в папку "publish"
+    - name: Build and publish
+      run: dotnet publish -c Release -o ./publish
+
+    # Шаг: перезапись строки подключения к БД в файле "appsettings.json"
+    - name: App variables substitution
+      uses: microsoft/variable-substitution@v1
+      with:
+        files: './publish/appsettings.json'
+      env:
+        ConnectionStrings.MySQLConnection: ${{ secrets.CONNECTION_STRING }}
+
+    # Шаг: копирование содержимого папки "publish" на VPS
+    - name: Copy files to VPS
+      uses: appleboy/scp-action@v1
+      with:
+        # Параметр, определяющий IP удаленного сервера
+        host: ${{ secrets.HOST }}
+        # Параметр, определяющий пользователя на удаленном сервере
+        username: ${{ secrets.USER }}
+        # Параметр, определяющий пароль авторизации пользователя на удаленном сервере
+        password: ${{ secrets.SSH_PASSWORD }}
+        # Параметр, определяющий объекты копирования
+        source: './publish/*'
+        # Параметр, определяющий путь копирования
+        target: '/var/www/www-root/data/www/evgenproject.com/My_Stud_Proj'
+        # Параметр, извлекающий объекты копирования из папки "publish"
+        strip_components: 1
+
+    # Шаг: перезапуск сервиса
+    - name: Restart app on VPS
+      uses: appleboy/ssh-action@v1
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USER }}
+        password: ${{ secrets.SSH_PASSWORD }}
+        script: sudo systemctl restart my_stud_proj.service
+
+    # Шаг: проверка сайта на код ответа "200"
+    - name: Check app health
+      # Команда "sleep 10" запускает ожидание в 10 сек (для запуска "my_stud_proj.service")
+      # Команда "curl -f https://evgenproject.com || exit 1" запускает обращение к сайту
+      # Флаг "-f" (Fail) возвращает ошибку на "виртуальную машину" GitHub Actions при коде ответа "4xx" или "5xx"
+      # Команда "exit 1" завершает скрипт с кодом ошибки "1"
+      run: |
+        sleep 10
+        curl -f https://evgenproject.com || exit 1
