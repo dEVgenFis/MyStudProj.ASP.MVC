@@ -98,16 +98,37 @@ loki.process "add_geoip" {
   // Стадия "обогащения" лога географическими структурными метаданными
   stage.structured_metadata {
     values = {
-      "client_ip" = "client_ip",
-
       // Широта
-      "lat"       = "geoip_location_latitude",
+      "lat"      = "geoip_location_latitude",
 
       // Долгота
-      "lon"       = "geoip_location_longitude",
+      "lon"      = "geoip_location_longitude",
 
       // Название владельца сети
-      "provider"  = "geoip_autonomous_system_organization",
+      "provider" = "geoip_autonomous_system_organization",
+    }
+  }
+
+  // Стадия захвата части IP-адреса
+  stage.regex {
+    source     = "client_ip"
+    /*
+      "(?P<ip_prefix>\\d+\\.\\d+\\.\\d+)" - именованная группа захвата, "запоминающая" первые три октета IP-адреса
+      "ip_prefix"                         - имя группы захвата
+    */
+    expression = "(?P<ip_prefix>\\d+\\.\\d+\\.\\d+)"
+  }
+
+  // Стадия обезличивания IP-адреса
+  stage.template {
+    source   = "client_ip"
+    template = "{{ .ip_prefix }}.0"
+  }
+
+  // Стадия дополнения лога обезличенным IP-адресом
+  stage.structured_metadata {
+    values = {
+      "client_ip" = "client_ip",
     }
   }
 
