@@ -10,7 +10,7 @@
 * <b>Шаблон проектирования:</b>&emsp;MVC
 * <b>База данных:</b>&emsp;MySQL
 * <b>Логирование:</b>&emsp;Serilog
-* <b>Регистрация/аутентификация:</b>&emsp;JSON-формат `user` в localStorage
+* <b>Регистрация/аутентификация:</b>&emsp;JSON-объект `user` в localStorage
 
 ## Production Lifecycle
 
@@ -31,7 +31,7 @@
 ## Дополнительные инструменты
 
 * <b>Дизайн:</b>&emsp;Figma
-* <b>Backend-разработка:</b>&emsp;Visual Studio *(v22)*
+* <b>Backend-разработка:</b>&emsp;Visual Studio *(v22)*, HeidiSQL
 * <b>Frontend-разработка:</b>&emsp;Visual Studio Code
 * <b>Развертывание Observability:</b>&emsp;Docker *(кроме OTel)*
 * <b>Справочная информация:</b>&emsp;Google AI, Metanit.com, WebReference, Stepik
@@ -124,13 +124,21 @@
 
 ### Какие дальнейшие планы по развитию проекта?
 
-* 🚩 Смена реализованного на сайте авторского способа аутентификации на JWT в `HttpOnly`-куках для повышения безопасности пользовательской сессии
+* 🚩 смена реализованного на сайте авторского способа аутентификации на JWT в `HttpOnly`-куках для повышения безопасности пользовательской сессии
 
-* 🚩 Покрытие кода unit-тестами для реализации полноценного CI/CD
+* 🚩 покрытие кода unit-тестами для реализации полноценного CI/CD
 
-* Оптимизация расхода RAM с помощью `AsNoTracking`-метода при операциях чтения данных, не требующих отслеживания изменений
+* оптимизация расхода RAM с помощью `AsNoTracking`-метода при операциях чтения данных, не требующих отслеживания изменений
 
-* Внедрение History API для корректной навигации на сайте
+* внедрение History API для корректной навигации на сайте
+
+### Почему Beget?
+
+* согласно данным [независимого портала-агрегатора](https://hostinghub.ru), хостинг-провайдер Beget входит в тройку лучших поставщиков облачных решений
+
+* прозрачная и гибкая тарификация предоставляемых услуг
+
+* [новогодняя акция](https://beget.com/ru/news/2025/novyj-2026-god) &mdash; достойный аргумент
 
 *Раздел дополняется.*
 
@@ -165,6 +173,6 @@
 
 На скриншоте под номером "2" приведено географическое уточнение плотности запросов: большинство IP адресов базируются в Самаре. Так и есть, потому что значительная часть запросов к сайту исходят от меня, автора проекта.
 
-Также представляю возможность ознакомиться с [десктопной](https://www.figma.com/proto/xwAFWbBMASH04oqgMu8vuK/dEvgEn?page-id=0%3A1&node-id=996-1149&viewport=466%2C214%2C0.06&t=sTPmNUo86c0X4waA-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=980%3A2) и [мобильной](https://www.figma.com/proto/xwAFWbBMASH04oqgMu8vuK/dEvgEn?page-id=1182%3A2&node-id=1313-150&viewport=449%2C144%2C0.09&t=sAv1jNmLqX0cmNlQ-1&scaling=scale-down&content-scaling=fixed) версиями прототипа сайта в Figma.
+Также предлагаю ознакомиться с [десктопной](https://www.figma.com/proto/xwAFWbBMASH04oqgMu8vuK/dEvgEn?page-id=0%3A1&node-id=996-1149&viewport=466%2C214%2C0.06&t=sTPmNUo86c0X4waA-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=980%3A2) и [мобильной](https://www.figma.com/proto/xwAFWbBMASH04oqgMu8vuK/dEvgEn?page-id=1182%3A2&node-id=1313-150&viewport=449%2C144%2C0.09&t=sAv1jNmLqX0cmNlQ-1&scaling=scale-down&content-scaling=fixed) версиями прототипа сайта в Figma.
 
 ## Добро пожаловать!
