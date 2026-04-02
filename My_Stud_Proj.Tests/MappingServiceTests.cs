@@ -12,7 +12,6 @@ namespace My_Stud_Proj.Tests
             var developerDb = new DeveloperDb
             {
                 Id = Guid.NewGuid(),
-                ÐhotoPath = "ÐhotoPath",
                 PhotoText = "PhotoText",
                 Name = "Name",
                 Spec = "Spec",
@@ -25,7 +24,6 @@ namespace My_Stud_Proj.Tests
 
             // Assert
             Assert.Equal(developerDb.Id, result.Id);
-            Assert.Equal(developerDb.ÐhotoPath, result.ÐhotoPath);
             Assert.Equal(developerDb.PhotoText, result.PhotoText);
             Assert.Equal(developerDb.Name, result.Name);
             Assert.Equal(developerDb.Spec, result.Spec);
