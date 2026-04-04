@@ -42,8 +42,8 @@ jobs:
     # Шаг: тестирование серверной логики приложения
     - name: Testing
       # Флаг "--no-restore" отменяет повторную установку на "виртуальную машину" NuGet-пакетов
-      # Флаг "--verbosity" со значением "normal" устанавливает уровень логирования тестов
-      run: dotnet test "My_Stud_Proj.Tests/My_Stud_Proj.Tests.csproj" --no-restore --verbosity normal
+      # Флаг "--verbosity" с дефолтным значением "minimal" устанавливает уровень логирования тестов
+      run: dotnet test "My_Stud_Proj.Tests/My_Stud_Proj.Tests.csproj" --no-restore
 
     # Шаг: сборка Release-версии проекта (".dll", Dynamic Link Library) в папку "publish"
     - name: Build and publish

@@ -66,7 +66,7 @@ services:
     volumes:
       - ./alloy.alloy:/etc/alloy/config.alloy:ro
       - ../My_Stud_Proj/logs:/var/log:ro
-      - ./alloy-data:/var/lib/alloy
+      - alloy_storage:/var/lib/alloy
       # Проброс MaxMind-БД в контейнер
       - ./GeoLite2-City.mmdb:/etc/alloy/GeoLite2-City.mmdb:ro
       - ./GeoLite2-ASN.mmdb:/etc/alloy/GeoLite2-ASN.mmdb:ro
@@ -99,4 +99,5 @@ volumes:
   # "/var/lib/docker/volumes/" (по умолчанию для Linux)
   prometheus_storage:
   loki_storage:
+  alloy_storage:
   grafana_storage:
